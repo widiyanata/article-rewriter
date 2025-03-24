@@ -1,0 +1,227 @@
+/**
+ * All of the CSS for your classic editor functionality should be
+ * included in this file.
+ *
+ * @link       https://widigital.com
+ * @since      1.0.0
+ *
+ * @package    Article_Rewriter
+ * @subpackage Article_Rewriter/assets/css
+ */
+
+/* Dialog */
+.article-rewriter-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 100000;
+    display: none;
+}
+
+.article-rewriter-dialog-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    border-radius: 3px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.article-rewriter-dialog-header {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.article-rewriter-dialog-header h2 {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.4;
+}
+
+.article-rewriter-dialog-close {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 1;
+    padding: 0;
+}
+
+.article-rewriter-dialog-close:hover {
+    color: #00a0d2;
+}
+
+.article-rewriter-dialog-body {
+    padding: 15px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* Form */
+.article-rewriter-options {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px 15px;
+}
+
+.article-rewriter-option {
+    flex: 1;
+    min-width: 200px;
+    padding: 0 10px;
+    margin-bottom: 15px;
+}
+
+.article-rewriter-option label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.article-rewriter-option select {
+    width: 100%;
+}
+
+.article-rewriter-content {
+    margin-bottom: 15px;
+}
+
+.article-rewriter-content label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.article-rewriter-content textarea {
+    width: 100%;
+    resize: vertical;
+}
+
+.article-rewriter-actions {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.article-rewriter-actions .button {
+    margin-right: 10px;
+}
+
+.article-rewriter-actions .spinner {
+    float: none;
+    margin: 0 10px;
+}
+
+/* Messages */
+.article-rewriter-message {
+    margin: 15px 0;
+}
+
+.article-rewriter-message .notice {
+    margin: 0;
+}
+
+/* Rewritten Content */
+.article-rewriter-rewritten {
+    margin-top: 20px;
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+}
+
+.article-rewriter-rewritten h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+/* History */
+.article-rewriter-history {
+    margin-top: 20px;
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+}
+
+.article-rewriter-history h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.article-rewriter-history-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.article-rewriter-history-item {
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    background: #f9f9f9;
+}
+
+.article-rewriter-history-item:last-child {
+    margin-bottom: 0;
+}
+
+.article-rewriter-history-item-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.article-rewriter-history-item-api {
+    font-weight: 600;
+}
+
+.article-rewriter-history-item-date {
+    color: #666;
+    font-size: 12px;
+}
+
+.article-rewriter-history-item-style {
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: #666;
+}
+
+.article-rewriter-history-apply {
+    margin-top: 5px;
+}
+
+/* Responsive */
+@media screen and (max-width: 782px) {
+    .article-rewriter-dialog-content {
+        width: 95%;
+        max-height: 95vh;
+    }
+    
+    .article-rewriter-options {
+        flex-direction: column;
+    }
+    
+    .article-rewriter-option {
+        width: 100%;
+    }
+    
+    .article-rewriter-actions {
+        flex-wrap: wrap;
+    }
+    
+    .article-rewriter-actions .button {
+        margin-bottom: 10px;
+    }
+}

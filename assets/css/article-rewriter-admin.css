@@ -1,0 +1,379 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ *
+ * @link       https://widigital.com
+ * @since      1.0.0
+ *
+ * @package    Article_Rewriter
+ * @subpackage Article_Rewriter/admin/css
+ */
+
+/* Dashboard */
+.article-rewriter-dashboard {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+}
+
+.article-rewriter-dashboard-column {
+    flex: 1;
+    min-width: 300px;
+    padding: 0 10px;
+    margin-bottom: 20px;
+}
+
+.article-rewriter-card {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.article-rewriter-card-header {
+    border-bottom: 1px solid #ccd0d4;
+    padding: 12px 15px;
+    background: #f8f9fa;
+}
+
+.article-rewriter-card-header h3 {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.article-rewriter-card-content {
+    padding: 15px;
+}
+
+.article-rewriter-quick-links {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+    justify-content: space-between;
+}
+
+.article-rewriter-quick-link {
+    flex: 1 0 calc(50% - 20px);
+    margin: 0 10px 20px;
+    text-align: center;
+}
+
+.article-rewriter-quick-link a {
+    display: block;
+    padding: 20px 15px;
+    background: #f8f9fa;
+    border: 1px solid #ccd0d4;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #23282d;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.article-rewriter-quick-link a:hover {
+    background: #f1f1f1;
+    border-color: #999;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.article-rewriter-quick-link-icon {
+    display: block;
+    margin: 0 auto 15px;
+    width: 32px;
+    height: 32px;
+    font-size: 32px;
+    color: #2271b1;
+}
+
+.article-rewriter-quick-link-label {
+    display: block;
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.article-rewriter-quick-link-description {
+    display: block;
+    color: #666;
+    font-size: 13px;
+}
+
+/* Recent Activity */
+.article-rewriter-activity-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.article-rewriter-activity-table th,
+.article-rewriter-activity-table td {
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.article-rewriter-activity-table th {
+    font-weight: 600;
+}
+
+.article-rewriter-activity-table tr:last-child td {
+    border-bottom: none;
+}
+
+.article-rewriter-activity-table .article-rewriter-activity-api {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+    background: #f0f0f1;
+}
+
+.article-rewriter-activity-table .article-rewriter-activity-api.openai {
+    background: #e7f5ff;
+    color: #0078d7;
+}
+
+.article-rewriter-activity-table .article-rewriter-activity-api.deepseek {
+    background: #f0f7e6;
+    color: #5cb85c;
+}
+
+/* Settings */
+.article-rewriter-settings-section {
+    margin-bottom: 30px;
+}
+
+.article-rewriter-settings-section h2 {
+    font-size: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ccd0d4;
+}
+
+.article-rewriter-settings-description {
+    margin-bottom: 15px;
+    color: #666;
+}
+
+.article-rewriter-settings-field {
+    margin-bottom: 15px;
+}
+
+.article-rewriter-settings-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.article-rewriter-settings-field input[type="text"],
+.article-rewriter-settings-field input[type="number"],
+.article-rewriter-settings-field select {
+    width: 100%;
+    max-width: 400px;
+}
+
+.article-rewriter-settings-field .description {
+    margin-top: 5px;
+    color: #666;
+    font-style: italic;
+}
+
+/* Batch Processing */
+.article-rewriter-batch-form {
+    margin-bottom: 30px;
+}
+
+.article-rewriter-batch-settings {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+}
+
+.article-rewriter-batch-setting {
+    flex: 1;
+    min-width: 200px;
+    padding: 0 10px;
+    margin-bottom: 15px;
+}
+
+.article-rewriter-batch-posts {
+    margin-top: 20px;
+}
+
+.article-rewriter-batch-posts-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.article-rewriter-batch-posts-table th,
+.article-rewriter-batch-posts-table td {
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.article-rewriter-batch-posts-table th {
+    font-weight: 600;
+}
+
+.article-rewriter-batch-posts-table tr:hover {
+    background: #f8f9fa;
+}
+
+.article-rewriter-batch-jobs {
+    margin-top: 30px;
+}
+
+.article-rewriter-batch-jobs-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.article-rewriter-batch-jobs-table th,
+.article-rewriter-batch-jobs-table td {
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f1;
+}
+
+.article-rewriter-batch-jobs-table th {
+    font-weight: 600;
+}
+
+.article-rewriter-batch-jobs-table tr.active {
+    background: #f0f7ff;
+}
+
+.article-rewriter-batch-status {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.article-rewriter-batch-status.pending {
+    background: #f8f9fa;
+    color: #666;
+}
+
+.article-rewriter-batch-status.in-progress {
+    background: #e7f5ff;
+    color: #0078d7;
+}
+
+.article-rewriter-batch-status.completed {
+    background: #f0f7e6;
+    color: #5cb85c;
+}
+
+.article-rewriter-batch-status.failed {
+    background: #fef0f0;
+    color: #d63638;
+}
+
+.article-rewriter-batch-progress {
+    width: 100%;
+    height: 10px;
+    background: #f0f0f1;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.article-rewriter-batch-progress-bar {
+    height: 100%;
+    background: #2271b1;
+    border-radius: 5px;
+}
+
+.article-rewriter-batch-details {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border: 1px solid #ccd0d4;
+}
+
+/* License */
+.article-rewriter-license-info {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border: 1px solid #ccd0d4;
+}
+
+.article-rewriter-license-info p {
+    margin: 0 0 10px;
+}
+
+.article-rewriter-license-info p:last-child {
+    margin-bottom: 0;
+}
+
+.article-rewriter-license-info .article-rewriter-license-status {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+.article-rewriter-license-info .article-rewriter-license-status.active {
+    background: #f0f7e6;
+    color: #5cb85c;
+}
+
+.article-rewriter-license-info .article-rewriter-license-status.inactive {
+    background: #fef0f0;
+    color: #d63638;
+}
+
+.article-rewriter-license-form {
+    max-width: 500px;
+}
+
+.article-rewriter-license-field {
+    margin-bottom: 15px;
+}
+
+.article-rewriter-license-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.article-rewriter-license-field input[type="text"] {
+    width: 100%;
+}
+
+.article-rewriter-license-field .description {
+    margin-top: 5px;
+    color: #666;
+    font-style: italic;
+}
+
+.article-rewriter-license-help {
+    margin-top: 30px;
+    padding: 15px;
+    background: #f8f9fa;
+    border: 1px solid #ccd0d4;
+}
+
+.article-rewriter-license-help h3 {
+    margin-top: 0;
+}
+
+.article-rewriter-license-help ol {
+    margin-left: 20px;
+}
+
+.article-rewriter-license-help li {
+    margin-bottom: 5px;
+}
+
+.article-rewriter-license-help .article-rewriter-license-note {
+    margin-top: 15px;
+    font-style: italic;
+    color: #666;
+}

@@ -1,0 +1,627 @@
+# Copyright (C) 2025 WiDigital
+# This file is distributed under the same license as the Article Rewriter plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Article Rewriter 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/article-rewriter\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-03-24T11:13:00+07:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.7.0\n"
+"X-Domain: article-rewriter\n"
+
+#. Plugin Name of the plugin
+msgid "Article Rewriter"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://widigital.com/article-rewriter"
+msgstr ""
+
+#. Description of the plugin
+msgid "Automatically rewrite articles using various cloud-based APIs such as DeepSeek, OpenAI, or others."
+msgstr ""
+
+#. Author of the plugin
+msgid "WiDigital"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://widigital.com"
+msgstr ""
+
+#: admin/class-article-rewriter-admin.php:140
+msgid "Article Rewriter"
+msgstr ""
+
+#: admin/class-article-rewriter-admin.php:141
+msgid "Rewrite your content with AI"
+msgstr ""
+
+#: admin/class-article-rewriter-admin.php:151
+msgid "Settings"
+msgstr ""
+
+#: admin/class-article-rewriter-admin.php:161
+msgid "Batch Processing"
+msgstr ""
+
+#: admin/class-article-rewriter-admin.php:171
+msgid "License"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-display.php:26
+msgid "Quick Links"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-display.php:27
+msgid "Access the main features of Article Rewriter."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-display.php:36
+msgid "Settings"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-display.php:48
+msgid "Batch Processing"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-display.php:55
+msgid "License"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-display.php:60
+msgid "Posts"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-display.php:65
+msgid "Pages"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-display.php:72
+msgid "Recent Activity"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-display.php:84
+msgid "Post"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-display.php:85
+msgid "API"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-display.php:86
+msgid "Style"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-display.php:87
+msgid "Date"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-display.php:108
+msgid "No recent activity found."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:25
+msgid "API Settings"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:26
+msgid "Configure your API settings for the Article Rewriter plugin."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:28
+msgid "You need to provide at least one API key to use the rewriting functionality."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:33
+msgid "OpenAI API Settings"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:43
+msgid "OpenAI API Key"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:46
+msgid "Enter your OpenAI API key. You can get one from <a href=\"https://platform.openai.com/api-keys\" target=\"_blank\">OpenAI API Keys</a>."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:52
+msgid "DeepSeek API Key"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:56
+msgid "Enter your DeepSeek API key. You can get one from <a href=\"https://platform.deepseek.com/\" target=\"_blank\">DeepSeek Platform</a>."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:62
+msgid "Default API"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:65
+msgid "OpenAI"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:67
+msgid "DeepSeek"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:70
+msgid "Select the default API to use for rewriting."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:79
+msgid "Rewriting Settings"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:89
+msgid "Default Rewrite Style"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:93
+msgid "Standard"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:96
+msgid "Creative"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:99
+msgid "Formal"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:102
+msgid "Simple"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:105
+msgid "Select the default style to use for rewriting."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:111
+msgid "Batch Size"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:115
+msgid "Maximum number of posts that can be processed in a batch."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:122
+msgid "Editor Integration"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:132
+msgid "Gutenberg Integration"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:136
+msgid "Enable Gutenberg integration"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:139
+msgid "Add Article Rewriter sidebar to the Gutenberg editor."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:145
+msgid "Classic Editor Integration"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:149
+msgid "Enable Classic Editor integration"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-settings.php:152
+msgid "Add Article Rewriter button to the Classic Editor toolbar."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:26
+msgid "Your license is inactive. Please activate your license to use this feature."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:41
+msgid "No API keys configured. Please add API keys in the settings."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:61
+msgid "Batch job created successfully. The posts will be rewritten in the background."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:66
+msgid "Create Batch Job"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:72
+msgid "Settings"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:82
+msgid "API"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:87
+msgid "OpenAI"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:90
+msgid "DeepSeek"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:98
+msgid "Rewrite Style"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:102
+msgid "Standard"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:104
+msgid "Creative"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:106
+msgid "Formal"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:108
+msgid "Simple"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:115
+msgid "Select Posts"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:118
+msgid "You can select up to %d posts to rewrite in a batch."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:132
+msgid "Title"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:133
+msgid "Type"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:134
+msgid "Date"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:149
+msgid "Post"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:149
+msgid "Page"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:157
+msgid "Create Batch"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:163
+msgid "Recent Batch Jobs"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:176
+msgid "ID"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:177
+msgid "Status"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:178
+msgid "API"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:179
+msgid "Style"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:180
+msgid "Progress"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:181
+msgid "Date"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:222
+msgid "failed"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:234
+msgid "No batch jobs found."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:239
+msgid "Batch Job Details"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:241
+msgid "Select a batch job to view details."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-batch.php:259
+msgid "Please select at least one post to rewrite."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:33
+msgid "License activated successfully."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:39
+msgid "License deactivated successfully."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:44
+msgid "License Information"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:48
+msgid "Status:"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:48
+msgid "Active"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:49
+msgid "Purchase Code:"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:50
+msgid "Domain:"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:51
+msgid "Expires:"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:56
+msgid "Never"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:60
+msgid "Support:"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:65
+msgid "Expired"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:70
+msgid "Your license is active. You can use Article Rewriter on %s."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:74
+msgid "Deactivate License"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:75
+msgid "If you want to use your license on another domain, you need to deactivate it first."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:83
+msgid "Deactivate License"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:89
+msgid "Status:"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:89
+msgid "Inactive"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:90
+msgid "Please activate your license to use Article Rewriter."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:94
+msgid "Activate License"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:95
+msgid "Enter your Envato purchase code to activate your license."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:104
+msgid "Purchase Code"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:106
+msgid "Enter your Envato purchase code"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:108
+msgid "You can find your purchase code in your Envato account."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:115
+msgid "Activate License"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:120
+msgid "How to find your purchase code"
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:122
+msgid "Log in to your Envato account."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:123
+msgid "Go to your Downloads page."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:124
+msgid "Find Article Rewriter in your purchases."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:125
+msgid "Click on \"Download\" button."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:126
+msgid "Select \"License certificate & purchase code\" from the dropdown."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:127
+msgid "Open the downloaded text file."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:128
+msgid "Copy the Item Purchase Code."
+msgstr ""
+
+#: admin/partials/article-rewriter-admin-license.php:131
+msgid "Note: Your purchase code looks like this: 8f0b5-d4c2-f8b5-c7d8-2c9b5-e3d4-f7a9-b8c3"
+msgstr ""
+
+#: includes/class-article-rewriter-api.php:121
+msgid "Invalid API request."
+msgstr ""
+
+#: includes/class-article-rewriter-api.php:129
+msgid "You do not have permission to rewrite content."
+msgstr ""
+
+#: includes/class-article-rewriter-api.php:137
+msgid "Your license is not active."
+msgstr ""
+
+#: includes/class-article-rewriter-api.php:152
+msgid "No content provided for rewriting."
+msgstr ""
+
+#: includes/class-article-rewriter-api.php:186
+msgid "No API key configured for %s."
+msgstr ""
+
+#: includes/class-article-rewriter-api.php:227
+msgid "Error processing request with OpenAI API."
+msgstr ""
+
+#: includes/class-article-rewriter-api.php:245
+msgid "No API key configured for %s."
+msgstr ""
+
+#: includes/class-article-rewriter-api.php:286
+msgid "Error processing request with DeepSeek API."
+msgstr ""
+
+#: includes/class-article-rewriter-batch.php:63
+msgid "Security check failed."
+msgstr ""
+
+#: includes/class-article-rewriter-batch.php:68
+msgid "You do not have permission to create batch jobs."
+msgstr ""
+
+#: includes/class-article-rewriter-batch.php:74
+msgid "Your license is not active."
+msgstr ""
+
+#: includes/class-article-rewriter-batch.php:79
+msgid "No posts selected for rewriting."
+msgstr ""
+
+#: includes/class-article-rewriter-batch.php:208
+msgid "Starting batch processing..."
+msgstr ""
+
+#: includes/class-article-rewriter-batch.php:229
+msgid "Processing post: %s"
+msgstr ""
+
+#: includes/class-article-rewriter-batch.php:393
+msgid "Security check failed."
+msgstr ""
+
+#: includes/class-article-rewriter-batch.php:398
+msgid "You do not have permission to view batch status."
+msgstr ""
+
+#: includes/class-article-rewriter-batch.php:404
+msgid "Invalid batch ID."
+msgstr ""
+
+#: includes/class-article-rewriter-batch.php:413
+msgid "Batch job not found."
+msgstr ""
+
+#: includes/class-article-rewriter-batch.php:431
+msgid "No API key configured for %s."
+msgstr ""
+
+#: includes/class-article-rewriter-batch.php:473
+msgid "Error processing request with OpenAI API."
+msgstr ""
+
+#: includes/class-article-rewriter-batch.php:496
+msgid "No API key configured for %s."
+msgstr ""
+
+#: includes/class-article-rewriter-batch.php:538
+msgid "Error processing request with DeepSeek API."
+msgstr ""
+
+#: includes/class-article-rewriter-batch.php:559
+msgid "Batch processing completed."
+msgstr ""
+
+#: includes/class-article-rewriter-batch.php:561
+msgid "Batch processing failed."
+msgstr ""
+
+#: includes/class-article-rewriter-batch.php:563
+msgid "Batch processing partially completed."
+msgstr ""
+
+#: includes/class-article-rewriter-batch.php:565
+msgid "Batch processing in progress."
+msgstr ""
+
+#: includes/class-article-rewriter-batch.php:567
+msgid "Batch processing pending."
+msgstr ""
+
+#: includes/class-article-rewriter-license.php:63
+msgid "Security check failed."
+msgstr ""
+
+#: includes/class-article-rewriter-license.php:68
+msgid "You do not have permission to activate the license."
+msgstr ""
+
+#: includes/class-article-rewriter-license.php:73
+msgid "No purchase code provided."
+msgstr ""
+
+#: includes/class-article-rewriter-license.php:136
+msgid "Security check failed."
+msgstr ""
+
+#: includes/class-article-rewriter-license.php:141
+msgid "You do not have permission to deactivate the license."
+msgstr ""
+
+#: includes/class-article-rewriter-license.php:240
+msgid "Your license is about to expire. <a href=\"%s\">Renew your license</a> to continue using Article Rewriter."
+msgstr ""
+
+#: includes/class-article-rewriter-license.php:249
+msgid "Your license has expired. <a href=\"%s\">Renew your license</a> to continue using Article Rewriter."
+msgstr ""
+
+#: includes/class-article-rewriter-license.php:268
+msgid "Invalid purchase code."
+msgstr ""
+
+#: includes/class-article-rewriter-license.php:279
+msgid "This purchase code is already in use on another domain."
+msgstr ""

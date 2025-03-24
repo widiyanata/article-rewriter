@@ -1,0 +1,58 @@
+# Project Rules & Patterns: WordPress Article Rewriter Plugin
+
+## Coding Standards
+- Follow WordPress Coding Standards
+- Use PHP namespaces for organization
+- Prefix all functions and classes with `Article_Rewriter_`
+- Use camelCase for JavaScript and snake_case for PHP
+- Document all functions and classes with PHPDoc
+
+## File Organization
+- Main plugin file: `article-rewriter.php`
+- Classes in `includes/` directory
+- Admin components in `admin/` directory
+- Frontend assets in `assets/` directory
+- Templates in `templates/` directory
+- API connectors in `includes/api/` directory
+
+## Database
+- Table names prefixed with `{$wpdb->prefix}article_rewriter_`
+- Use WordPress dbDelta for table creation
+- Follow WordPress data sanitization practices
+- Use prepared statements for all queries
+
+## Hooks & Filters
+- Action hooks prefixed with `article_rewriter_`
+- Filter hooks prefixed with `article_rewriter_`
+- Document all hooks in code comments
+- Maintain hook consistency across components
+
+## User Interface
+- Follow WordPress admin UI patterns
+- Use WordPress components for Gutenberg
+- Maintain consistent styling with WordPress admin
+- Ensure responsive design for all screens
+
+## API Integration
+- Store API keys securely using WordPress options API
+- Implement proper error handling for all API calls
+- Cache API responses when appropriate
+- Respect API rate limits
+
+## Licensing
+- Validate purchase codes against Envato API
+- Store license information securely
+- Implement regular license checks
+- Gracefully handle expired/invalid licenses
+
+## Project-Specific Patterns
+- Use factory pattern for API connector creation
+- Implement strategy pattern for rewriting styles
+- Use observer pattern for batch processing status
+- Follow singleton pattern for core components
+
+## Development Workflow
+- Document all changes in code comments
+- Update memory bank files with significant changes
+- Test thoroughly before implementing new features
+- Consider backward compatibility for all changes
