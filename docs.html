@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Article Rewriter Plugin Documentation</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+          sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+        display: flex;
+      }
+      .sidebar {
+        width: 250px;
+        background-color: #f4f4f4;
+        padding: 20px;
+        border-right: 1px solid #e0e0e0;
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        overflow-y: auto;
+      }
+      .sidebar h3 {
+        border-bottom: 2px solid #333;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+      }
+      .sidebar ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+      .sidebar ul li {
+        margin-bottom: 10px;
+      }
+      .sidebar ul li a {
+        text-decoration: none;
+        color: #333;
+        transition: color 0.3s ease;
+      }
+      .sidebar ul li a:hover {
+        color: #0066cc;
+      }
+      .main-content {
+        margin-left: 350px;
+        padding: 20px;
+        max-width: 800px;
+        width: calc(100% - 350px);
+      }
+      h1,
+      h2,
+      h3 {
+        color: #333;
+      }
+      .nested-list {
+        margin-left: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li>
+          <a href="#features">Features</a>
+          <ul class="nested-list">
+            <li><a href="#api-integration">API Support</a></li>
+            <li><a href="#rewriting-styles">Rewriting Styles</a></li>
+            <li><a href="#wordpress-integration">WordPress Integration</a></li>
+          </ul>
+        </li>
+        <li><a href="#system-requirements">System Requirements</a></li>
+        <li><a href="#installation">Installation Guide</a></li>
+        <li>
+          <a href="#usage">Usage Instructions</a>
+          <ul class="nested-list">
+            <li><a href="#single-article-rewriting">Single Article Rewriting</a></li>
+            <li><a href="#batch-processing">Batch Processing</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="#api-configuration">API Configuration</a>
+          <ul class="nested-list">
+            <li><a href="#openai-setup">OpenAI Setup</a></li>
+            <li><a href="#deepseek-setup">DeepSeek Setup</a></li>
+          </ul>
+        </li>
+        <li><a href="#licensing">Licensing</a></li>
+        <li><a href="#support">Support</a></li>
+        <li><a href="#version-history">Version History</a></li>
+        <li><a href="#credits">Credits</a></li>
+      </ul>
+    </div>
+    <div class="main-content">
+      <h1 id="overview">Article Rewriter WordPress Plugin</h1>
+      <h2 id="overview">Overview</h2>
+      <p>
+        Article Rewriter is a powerful WordPress plugin designed to streamline content creation by
+        automatically rewriting articles using advanced cloud-based APIs. With support for multiple
+        AI services and flexible rewriting options, this plugin simplifies the process of generating
+        unique content.
+      </p>
+
+      <h2 id="features">Features</h2>
+
+      <h3 id="api-integration">Versatile API Integration</h3>
+      <ul>
+        <li>
+          Supports multiple AI writing services including:
+          <ul>
+            <li>OpenAI</li>
+            <li>DeepSeek</li>
+            <li>Anthropic (Coming Soon)</li>
+            <li>Google Gemini (Coming Soon)</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3 id="rewriting-styles">Flexible Rewriting Styles</h3>
+      <p>Choose from multiple writing modes:</p>
+      <ul>
+        <li>Standard</li>
+        <li>Formal</li>
+        <li>Casual</li>
+        <li>Creative</li>
+      </ul>
+
+      <h3 id="wordpress-integration">Seamless WordPress Integration</h3>
+      <ul>
+        <li>Compatible with both Gutenberg Block Editor and Classic Editor</li>
+        <li>Intuitive user interface for easy article rewriting</li>
+      </ul>
+
+      <h2 id="system-requirements">System Requirements</h2>
+      <ul>
+        <li>WordPress 5.0+</li>
+        <li>PHP 7.2+</li>
+        <li>API keys for desired content rewriting services</li>
+      </ul>
+
+      <h2 id="installation">Installation Guide</h2>
+      <ol>
+        <li>Upload the `article-rewriter` folder to `/wp-content/plugins/`</li>
+        <li>Activate the plugin through WordPress admin</li>
+        <li>Navigate to 'Article Rewriter' in the admin menu</li>
+        <li>Enter your Envato purchase code</li>
+        <li>Configure API settings</li>
+      </ol>
+
+      <h2 id="usage">Usage Instructions</h2>
+
+      <h3 id="single-article-rewriting">Single Article Rewriting</h3>
+
+      <h4>Gutenberg (Block) Editor</h4>
+      <ol>
+        <li>Open desired post/page</li>
+        <li>Click "Rewrite Article" toolbar button</li>
+        <li>Select preferred API and style</li>
+        <li>Execute rewrite</li>
+      </ol>
+
+      <h4>Classic Editor</h4>
+      <ol>
+        <li>Open desired post/page</li>
+        <li>Click "Rewrite Article" toolbar button</li>
+        <li>Select preferred API and style</li>
+        <li>Execute rewrite</li>
+      </ol>
+
+      <h3 id="batch-processing">Batch Processing</h3>
+      <ol>
+        <li>Go to 'Article Rewriter > Batch' in admin menu</li>
+        <li>
+          Configure processing parameters:
+          <ul>
+            <li>Select post type</li>
+            <li>Choose API</li>
+            <li>Select rewriting style</li>
+          </ul>
+        </li>
+        <li>Set number of posts to process</li>
+        <li>Initiate batch processing</li>
+        <li>Monitor progress on batch page</li>
+      </ol>
+
+      <h2 id="api-configuration">API Configuration</h2>
+
+      <h3 id="openai-setup">OpenAI Setup</h3>
+      <ol>
+        <li>Create account at <a href="https://platform.openai.com/">OpenAI Platform</a></li>
+        <li>Generate API key</li>
+        <li>Enter key in plugin settings</li>
+      </ol>
+
+      <h3 id="deepseek-setup">DeepSeek Setup</h3>
+      <ol>
+        <li>Create account at <a href="https://platform.deepseek.com/">DeepSeek Platform</a></li>
+        <li>Generate API key</li>
+        <li>Enter key in plugin settings</li>
+      </ol>
+
+      <h3>Upcoming Integrations</h3>
+      <ul>
+        <li><strong>Anthropic Claude API</strong>: Coming soon</li>
+        <li><strong>Google Gemini API</strong>: Coming soon</li>
+      </ul>
+
+      <h2 id="licensing">Licensing</h2>
+      <ol>
+        <li>Purchase plugin from Envato</li>
+        <li>Navigate to 'Article Rewriter > License'</li>
+        <li>Input Envato purchase code</li>
+        <li>Activate license</li>
+      </ol>
+      <p><strong>Important</strong>: One purchase code is valid for a single domain.</p>
+
+      <h2 id="support">Support</h2>
+      <ul>
+        <li>Email: support@widigital.com</li>
+        <li>Support Page: <a href="https://widigital.com/support">WiDigital Support</a></li>
+      </ul>
+
+      <h2 id="version-history">Version History</h2>
+      <h3>Version 1.0.0</h3>
+      <ul>
+        <li>Initial plugin release</li>
+      </ul>
+
+      <h2 id="credits">Credits</h2>
+      <ul>
+        <li><strong>Development</strong>: <a href="https://widigital.com">WiDigital</a></li>
+        <li><strong>Icons</strong>: <a href="https://fontawesome.com">FontAwesome</a></li>
+      </ul>
+
+      <p><em>Enhance your content creation workflow with Article Rewriter - Powered by AI</em></p>
+    </div>
+  </body>
+</html>
