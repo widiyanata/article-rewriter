@@ -49,6 +49,21 @@ if ( ! defined( 'WPINC' ) ) {
             </p>
           </td>
         </tr>
+        <tr valign="top">
+          <th scope="row"><?php _e( 'OpenAI Model', 'article-rewriter' ); ?></th>
+          <td>
+            <select name="article_rewriter_openai_model">
+              <?php
+                    $openai_models = ['gpt-4' => 'GPT-4', 'gpt-4-turbo' => 'GPT-4 Turbo', 'gpt-3.5-turbo' => 'GPT-3.5 Turbo'];
+                    $current_openai_model = get_option('article_rewriter_openai_model', 'gpt-4');
+                    foreach ($openai_models as $value => $label) {
+                        echo '<option value="' . esc_attr($value) . '" ' . selected($current_openai_model, $value, false) . '>' . esc_html($label) . '</option>';
+                    }
+                    ?>
+            </select>
+            <p class="description"><?php _e( 'Select the OpenAI model to use.', 'article-rewriter' ); ?></p>
+          </td>
+        </tr>
 
         <tr valign="top">
           <th scope="row"><?php _e( 'DeepSeek API Key', 'article-rewriter' ); ?></th>
@@ -59,6 +74,21 @@ if ( ! defined( 'WPINC' ) ) {
             <p class="description">
               <?php _e( 'Enter your DeepSeek API key. You can get one from <a href="https://platform.deepseek.com/" target="_blank">DeepSeek Platform</a>.', 'article-rewriter' ); ?>
             </p>
+          </td>
+        </tr>
+        <tr valign="top">
+          <th scope="row"><?php _e( 'DeepSeek Model', 'article-rewriter' ); ?></th>
+          <td>
+            <select name="article_rewriter_deepseek_model">
+              <?php
+                    $deepseek_models = ['deepseek-chat' => 'DeepSeek Chat', 'deepseek-coder' => 'DeepSeek Coder'];
+                    $current_deepseek_model = get_option('article_rewriter_deepseek_model', 'deepseek-chat');
+                    foreach ($deepseek_models as $value => $label) {
+                        echo '<option value="' . esc_attr($value) . '" ' . selected($current_deepseek_model, $value, false) . '>' . esc_html($label) . '</option>';
+                    }
+                    ?>
+            </select>
+            <p class="description"><?php _e( 'Select the DeepSeek model to use.', 'article-rewriter' ); ?></p>
           </td>
         </tr>
 
@@ -73,6 +103,25 @@ if ( ! defined( 'WPINC' ) ) {
             </p>
           </td>
         </tr>
+        <tr valign="top">
+          <th scope="row"><?php _e( 'Anthropic Model', 'article-rewriter' ); ?></th>
+          <td>
+            <select name="article_rewriter_anthropic_model">
+              <?php
+                    $anthropic_models = [
+                        'claude-3-opus-20240229' => 'Claude 3 Opus',
+                        'claude-3-sonnet-20240229' => 'Claude 3 Sonnet',
+                        'claude-3-haiku-20240307' => 'Claude 3 Haiku',
+                    ];
+                    $current_anthropic_model = get_option('article_rewriter_anthropic_model', 'claude-3-opus-20240229');
+                    foreach ($anthropic_models as $value => $label) {
+                        echo '<option value="' . esc_attr($value) . '" ' . selected($current_anthropic_model, $value, false) . '>' . esc_html($label) . '</option>';
+                    }
+                    ?>
+            </select>
+            <p class="description"><?php _e( 'Select the Anthropic model to use.', 'article-rewriter' ); ?></p>
+          </td>
+        </tr>
 
         <tr valign="top">
           <th scope="row"><?php _e( 'Google Gemini API Key', 'article-rewriter' ); ?></th>
@@ -82,6 +131,25 @@ if ( ! defined( 'WPINC' ) ) {
             <p class="description">
               <?php _e( 'Enter your Google Gemini API key. You can get one from <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a>.', 'article-rewriter' ); ?>
             </p>
+          </td>
+        </tr>
+        <tr valign="top">
+          <th scope="row"><?php _e( 'Google Gemini Model', 'article-rewriter' ); ?></th>
+          <td>
+            <select name="article_rewriter_gemini_model">
+              <?php
+                    $gemini_models = [
+                        'gemini-1.5-pro' => 'Gemini 1.5 Pro',
+                        'gemini-1.5-flash' => 'Gemini 1.5 Flash',
+                        // Add other models like gemini-pro if needed
+                    ];
+                    $current_gemini_model = get_option('article_rewriter_gemini_model', 'gemini-1.5-pro');
+                    foreach ($gemini_models as $value => $label) {
+                        echo '<option value="' . esc_attr($value) . '" ' . selected($current_gemini_model, $value, false) . '>' . esc_html($label) . '</option>';
+                    }
+                    ?>
+            </select>
+            <p class="description"><?php _e( 'Select the Google Gemini model to use.', 'article-rewriter' ); ?></p>
           </td>
         </tr>
 

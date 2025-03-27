@@ -28,8 +28,8 @@ class DeepSeek_Provider extends Abstract_API_Provider {
     }
 
     protected function get_model_name() {
-        // TODO: Make this configurable via settings?
-        return 'deepseek-chat'; 
+        // Retrieve the saved model option, fallback to 'deepseek-chat'
+        return get_option('article_rewriter_deepseek_model', 'deepseek-chat'); 
     }
 
      protected function get_error_prefix() {

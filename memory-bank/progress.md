@@ -41,7 +41,7 @@
 *   **Editor Integration:** Test the actual rewrite functionality and UI within both Classic and Block editors. Verify Classic Editor modal and history functionality. Verify Block Editor sidebar functionality.
 *   **Batch Processing:** Verify the WP Cron job scheduling/execution. Test the batch UI (`admin/partials/article-rewriter-admin-batch.php`) and AJAX functionality (start, status, details, cancel, delete). Test handling of failed items.
 *   **Licensing:** Implement the actual license server communication logic in `verify_purchase_code` and `deactivate_license`. Test the activation/deactivation flow via AJAX. Verify the daily cron check correctly updates status (e.g., for expiry). Test admin notices.
-*   **Settings:** Verify that registered settings are correctly saved/retrieved and used by the plugin logic (e.g., API keys used in API calls, defaults applied). Check the UI in `admin/partials/article-rewriter-admin-settings.php`. Verify default options set on activation are appropriate. Settings fields for Anthropic/Gemini keys added. Consider making models configurable.
+*   **Settings:** Verify that registered settings are correctly saved/retrieved and used by the plugin logic (e.g., API keys, selected models, defaults applied). Check the UI in `admin/partials/article-rewriter-admin-settings.php`. Verify default options set on activation are appropriate. **Model selection settings added and implemented.**
 *   **Frontend Build Process:** Confirmed build uses `npm run build` via `@wordpress/scripts`. Verify the build process works and generates `build/index.js` correctly from `src/index.js`.
 *   **Error Handling:** Review error handling in `Article_Rewriter_Service`, provider classes, REST handler, AJAX handlers, Block Editor JS, Classic Editor JS, Admin JS, and batch processing cron job.
 *   **Security:** Review REST API permission checks, nonce usage (REST, AJAX), data sanitization, and DB interactions. Check `dbDelta` usage.
@@ -51,11 +51,11 @@
 
 ## 3. Current Status
 
-*   **Analysis & Refactoring Phase:** Complete. AJAX conflicts resolved, missing handlers added, API logic refactored, placeholder providers implemented.
-*   **Code Functionality:** Core structure refactored and providers implemented. Features require testing.
+*   **Analysis & Refactoring Phase:** Complete. AJAX conflicts resolved, missing handlers added, API logic refactored, providers implemented, model selection added.
+*   **Code Functionality:** Core structure refactored and providers implemented. Initial user feedback indicates core API and features are working. More thorough testing still recommended.
 
 ## 4. Known Issues / Blockers
 
 *   Placeholder code for license server communication.
 
-*(Refactoring and provider implementation complete. Testing phase is next.)*
+*(Refactoring and provider implementation complete. Initial testing positive. License server implementation pending.)*

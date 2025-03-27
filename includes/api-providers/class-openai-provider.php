@@ -28,8 +28,8 @@ class OpenAI_Provider extends Abstract_API_Provider {
     }
 
     protected function get_model_name() {
-        // TODO: Make this configurable via settings?
-        return 'gpt-4'; 
+        // Retrieve the saved model option, fallback to 'gpt-4'
+        return get_option('article_rewriter_openai_model', 'gpt-4'); 
     }
 
      protected function get_error_prefix() {

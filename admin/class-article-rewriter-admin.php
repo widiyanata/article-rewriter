@@ -260,6 +260,50 @@ class Article_Rewriter_Admin {
             )
         );
 
+        // OpenAI Model
+        register_setting(
+            'article_rewriter_settings',
+            'article_rewriter_openai_model',
+            array(
+                'type' => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+                'default' => 'gpt-4', // Default from provider
+            )
+        );
+
+        // DeepSeek Model
+        register_setting(
+            'article_rewriter_settings',
+            'article_rewriter_deepseek_model',
+            array(
+                'type' => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+                'default' => 'deepseek-chat', // Default from provider
+            )
+        );
+
+        // Anthropic Model
+        register_setting(
+            'article_rewriter_settings',
+            'article_rewriter_anthropic_model',
+            array(
+                'type' => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+                'default' => 'claude-3-opus-20240229', // Default from provider
+            )
+        );
+
+        // Gemini Model
+        register_setting(
+            'article_rewriter_settings',
+            'article_rewriter_gemini_model',
+            array(
+                'type' => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+                'default' => 'gemini-1.5-pro', // Default from provider
+            )
+        );
+
         // Default API
         register_setting(
             'article_rewriter_settings',
