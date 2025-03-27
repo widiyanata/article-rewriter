@@ -21,6 +21,15 @@
 class Article_Rewriter_API {
 
     /**
+     * The shared service class instance.
+     *
+     * @since    1.1.0
+     * @access   private
+     * @var      Article_Rewriter_Service    $service    Shared service class.
+     */
+    private $service;
+
+    /**
      * The ID of this plugin.
      *
      * @since    1.0.0
@@ -48,6 +57,13 @@ class Article_Rewriter_API {
     public function __construct($plugin_name, $version) {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
+
+        // Instantiate the service class
+        // Ensure the service class file is loaded before this class is instantiated
+        if (!class_exists('Article_Rewriter_Service')) {
+             require_once plugin_dir_path( __FILE__ ) . 'class-article-rewriter-service.php';
+        }
+        $this->service = new Article_Rewriter_Service();
     }
 
     /**
@@ -125,18 +141,18 @@ class Article_Rewriter_API {
             );
         }
 
-        // Rewrite the content using the selected API
-        $rewritten_content = $this->rewrite_with_api($content, $api, $style);
+        // Rewrite the content using the service class
+        $rewritten_content = $this->service->rewrite_content($content, $api, $style);
 
         if (is_wp_error($rewritten_content)) {
             return new WP_REST_Response(
                 array('message' => $rewritten_content->get_error_message()),
-                500
+                500 // Or potentially map WP_Error codes to HTTP status codes
             );
         }
 
-        // Save the rewrite history
-        $this->save_history($post_id, $api, $style, $rewritten_content);
+        // Save the rewrite history using the service class
+        $this->service->save_history($post_id, $api, $style, $rewritten_content);
 
         return new WP_REST_Response(
             array('content' => $rewritten_content),
@@ -186,234 +202,7 @@ class Article_Rewriter_API {
      * @param    string $style   The rewriting style to use.
      * @return   string|WP_Error The rewritten content or an error.
      */
-    private function rewrite_with_api($content, $api, $style) {
-        switch ($api) {
-            case 'openai':
-                return $this->rewrite_with_openai($content, $style);
-            case 'deepseek':
-                return $this->rewrite_with_deepseek($content, $style);
-            case 'anthropic':
-                return $this->rewrite_with_anthropic($content, $style);
-            case 'gemini':
-                return $this->rewrite_with_gemini($content, $style);
-            default:
-                return new WP_Error('invalid_api', __('Invalid API provider.', 'article-rewriter'));
-        }
-    }
-
-    /**
-     * Rewrite content using the OpenAI API.
-     *
-     * @since    1.0.0
-     * @param    string $content The content to rewrite.
-     * @param    string $style   The rewriting style to use.
-     * @return   string|WP_Error The rewritten content or an error.
-     */
-    private function rewrite_with_openai($content, $style) {
-        $api_key = get_option('article_rewriter_openai_api_key');
-        
-        if (empty($api_key)) {
-            return new WP_Error('api_key_missing', __('OpenAI API key is missing.', 'article-rewriter'));
-        }
-
-        $prompt = $this->get_prompt_for_style($style);
-        
-        $data = array(
-            'model' => 'gpt-4',
-            'messages' => array(
-                array(
-                    'role' => 'system',
-                    'content' => $prompt,
-                ),
-                array(
-                    'role' => 'user',
-                    'content' => $content,
-                ),
-            ),
-            'temperature' => 0.7,
-            'max_tokens' => 4000,
-        );
-
-        $response = wp_remote_post(
-            'https://api.openai.com/v1/chat/completions',
-            array(
-                'headers' => array(
-                    'Authorization' => 'Bearer ' . $api_key,
-                    'Content-Type' => 'application/json',
-                ),
-                'body' => json_encode($data),
-                'timeout' => 60,
-            )
-        );
-
-        if (is_wp_error($response)) {
-            return $response;
-        }
-
-        $response_code = wp_remote_retrieve_response_code($response);
-        if ($response_code !== 200) {
-            $body = wp_remote_retrieve_body($response);
-            return new WP_Error('openai_error', __('OpenAI API error: ', 'article-rewriter') . $body);
-        }
-
-        $body = wp_remote_retrieve_body($response);
-        $data = json_decode($body, true);
-        
-        if (!isset($data['choices'][0]['message']['content'])) {
-            return new WP_Error('openai_error', __('Invalid response from OpenAI API.', 'article-rewriter'));
-        }
-
-        return $data['choices'][0]['message']['content'];
-    }
-
-    /**
-     * Rewrite content using the DeepSeek API.
-     *
-     * @since    1.0.0
-     * @param    string $content The content to rewrite.
-     * @param    string $style   The rewriting style to use.
-     * @return   string|WP_Error The rewritten content or an error.
-     */
-    private function rewrite_with_deepseek($content, $style) {
-        $api_key = get_option('article_rewriter_deepseek_api_key');
-        
-        if (empty($api_key)) {
-            return new WP_Error('api_key_missing', __('DeepSeek API key is missing.', 'article-rewriter'));
-        }
-
-        $prompt = $this->get_prompt_for_style($style);
-        
-        $data = array(
-            'model' => 'deepseek-chat',
-            'messages' => array(
-                array(
-                    'role' => 'system',
-                    'content' => $prompt,
-                ),
-                array(
-                    'role' => 'user',
-                    'content' => $content,
-                ),
-            ),
-            'temperature' => 0.7,
-            'max_tokens' => 4000,
-        );
-
-        $response = wp_remote_post(
-            'https://api.deepseek.com/v1/chat/completions',
-            array(
-                'headers' => array(
-                    'Authorization' => 'Bearer ' . $api_key,
-                    'Content-Type' => 'application/json',
-                ),
-                'body' => json_encode($data),
-                'timeout' => 60,
-            )
-        );
-
-        if (is_wp_error($response)) {
-            return $response;
-        }
-
-        $response_code = wp_remote_retrieve_response_code($response);
-        if ($response_code !== 200) {
-            $body = wp_remote_retrieve_body($response);
-            return new WP_Error('deepseek_error', __('DeepSeek API error: ', 'article-rewriter') . $body);
-        }
-
-        $body = wp_remote_retrieve_body($response);
-        $data = json_decode($body, true);
-        
-        if (!isset($data['choices'][0]['message']['content'])) {
-            return new WP_Error('deepseek_error', __('Invalid response from DeepSeek API.', 'article-rewriter'));
-        }
-
-        return $data['choices'][0]['message']['content'];
-    }
-
-    /**
-     * Get the prompt for the selected style.
-     *
-     * @since    1.0.0
-     * @param    string $style The rewriting style.
-     * @return   string The prompt.
-     */
-    private function get_prompt_for_style($style) {
-        switch ($style) {
-            case 'standard':
-                return __('You are a professional content rewriter. Rewrite the following article while maintaining the same meaning, but using different wording and sentence structure. Keep the same headings and formatting.', 'article-rewriter');
-            case 'formal':
-                return __('You are a professional content rewriter. Rewrite the following article in a formal, academic style while maintaining the same meaning. Use sophisticated vocabulary and complex sentence structures. Keep the same headings and formatting.', 'article-rewriter');
-            case 'casual':
-                return __('You are a professional content rewriter. Rewrite the following article in a casual, conversational style while maintaining the same meaning. Use simple language and a friendly tone. Keep the same headings and formatting.', 'article-rewriter');
-            case 'creative':
-                return __('You are a professional content rewriter. Rewrite the following article in a creative, engaging style while maintaining the same meaning. Use vivid language, metaphors, and storytelling techniques. Keep the same headings and formatting.', 'article-rewriter');
-            default:
-                return __('You are a professional content rewriter. Rewrite the following article while maintaining the same meaning, but using different wording and sentence structure. Keep the same headings and formatting.', 'article-rewriter');
-        }
-    }
-
-    /**
-     * Save the rewrite history.
-     *
-     * @since    1.0.0
-     * @param    int    $post_id  The post ID.
-     * @param    string $api      The API provider used.
-     * @param    string $style    The rewriting style used.
-     * @param    string $content  The rewritten content.
-     */
-    private function save_history($post_id, $api, $style, $content) {
-        global $wpdb;
-
-        // If post_id is not provided, try to get it from the current post
-        if (empty($post_id)) {
-            $post_id = get_the_ID();
-        }
-
-        // Get the current user ID
-        $user_id = get_current_user_id();
-
-        // Insert the history record
-        $table_name = $wpdb->prefix . 'article_rewriter_history';
-        $wpdb->insert(
-            $table_name,
-            array(
-                'post_id' => $post_id,
-                'user_id' => $user_id,
-                'api' => $api,
-                'style' => $style,
-                'content' => $content,
-                'created_at' => current_time('mysql'),
-            ),
-            array('%d', '%d', '%s', '%s', '%s', '%s')
-        );
-    }
-
-    /**
-     * Rewrite content using the Anthropic API.
-     *
-     * @since    1.0.0
-     * @param    string $content The content to rewrite.
-     * @param    string $style   The rewriting style to use.
-     * @return   string|WP_Error The rewritten content or an error.
-     */
-    private function rewrite_with_anthropic($content, $style) {
-        // Implementation for Anthropic API
-        // This is a placeholder for future implementation
-        return $content;
-    }
-
-    /**
-     * Rewrite content using the Google Gemini API.
-     *
-     * @since    1.0.0
-     * @param    string $content The content to rewrite.
-     * @param    string $style   The rewriting style to use.
-     * @return   string|WP_Error The rewritten content or an error.
-     */
-    private function rewrite_with_gemini($content, $style) {
-        // Implementation for Google Gemini API
-        // This is a placeholder for future implementation
-        return $content;
-    }
+    // Removed duplicated methods: rewrite_with_api, rewrite_with_openai, rewrite_with_deepseek,
+    // rewrite_with_anthropic, rewrite_with_gemini, get_prompt_for_style, save_history
+    // These are now handled by Article_Rewriter_Service
 }

@@ -68,14 +68,12 @@ $posts = get_posts( array(
   <div class="article-rewriter-card">
     <h2><?php _e( 'Create Batch Job', 'article-rewriter' ); ?></h2>
 
-    <form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
-      <input type="hidden" name="action" value="article_rewriter_start_batch" />
+    <form id="article-rewriter-batch-form"> <?php // Removed method and action, added ID ?>
+      <?php // Nonce will be handled by JS using localized variable ?>
 
       <a href="<?php echo admin_url( 'admin.php?page=article-rewriter-settings' ); ?>" class="button">
         <?php _e( 'Settings', 'article-rewriter' ); ?>
       </a>
-
-      <?php wp_nonce_field( 'article_rewriter_start_batch' ); ?>
 
       <table class="form-table">
         <tr valign="top">
@@ -156,8 +154,12 @@ $posts = get_posts( array(
       </div>
 
       <p class="submit">
-        <input type="submit" name="submit" id="submit" class="button button-primary"
-          value="<?php _e( 'Create Batch', 'article-rewriter' ); ?>" />
+        <button type="submit" id="article-rewriter-batch-submit" class="button button-primary">
+          <?php // Changed to button and updated ID ?>
+          <?php _e( 'Create Batch', 'article-rewriter' ); ?>
+        </button>
+        <span class="spinner" style="float: none; vertical-align: middle;"></span>
+        <?php // Added spinner for AJAX feedback ?>
       </p>
     </form>
   </div>
@@ -172,59 +174,63 @@ $posts = get_posts( array(
         ?>
 
     <?php if ( ! empty( $recent_jobs ) ) : ?>
-    <table class="wp-list-table widefat fixed striped">
+    <table id="article-rewriter-batch-jobs-table" class="wp-list-table widefat fixed striped"> <?php // Added ID ?>
       <thead>
         <tr>
           <th><?php _e( 'ID', 'article-rewriter' ); ?></th>
           <th><?php _e( 'Status', 'article-rewriter' ); ?></th>
           <th><?php _e( 'API', 'article-rewriter' ); ?></th>
           <th><?php _e( 'Style', 'article-rewriter' ); ?></th>
-          <!-- <th><?php _e( 'Progress', 'article-rewriter' ); ?></th> -->
-          <th><?php _e( 'Date', 'article-rewriter' ); ?></th>
+          <th><?php _e( 'Progress', 'article-rewriter' ); ?></th> <?php // Uncommented Progress ?>
+          <th><?php _e( 'Created', 'article-rewriter' ); ?></th>
+          <th><?php _e( 'Updated', 'article-rewriter' ); ?></th> <?php // Added Updated column ?>
+          <th><?php _e( 'Actions', 'article-rewriter' ); ?></th> <?php // Added Actions column ?>
         </tr>
       </thead>
       <tbody>
         <?php foreach ( $recent_jobs as $job ) : ?>
-        <tr>
+        <tr data-job-id="<?php echo esc_attr( $job->id ); ?>"> <?php // Added data-job-id ?>
           <td><?php echo esc_html( $job->id ); ?></td>
           <td>
             <?php
-                                switch ( $job->status ) {
-                                    case 'pending':
-                                        echo '<span class="article-rewriter-status article-rewriter-status-pending">' . esc_html( ucfirst( $job->status ) ) . '</span>';
-                                        break;
-                                    case 'processing':
-                                        echo '<span class="article-rewriter-status article-rewriter-status-processing">' . esc_html( ucfirst( $job->status ) ) . '</span>';
-                                        break;
-                                    case 'completed':
-                                        echo '<span class="article-rewriter-status article-rewriter-status-completed">' . esc_html( ucfirst( $job->status ) ) . '</span>';
-                                        break;
-                                    default:
-                                        echo '<span class="article-rewriter-status">' . esc_html( ucfirst( $job->status ) ) . '</span>';
+                                $status_label = ucfirst( $job->status );
+                                $status_class = sanitize_html_class( $job->status );
+                                // Map processing to in-progress for JS polling
+                                if ($status_class === 'processing') {
+                                    $status_class = 'in-progress';
                                 }
+                                echo '<span class="article-rewriter-batch-status ' . $status_class . '">' . esc_html( $status_label ) . '</span>';
+                                /* switch ( $job->status ) {
+                                } */
                                 ?>
           </td>
           <td><?php echo esc_html( ucfirst( $job->api ) ); ?></td>
           <td><?php echo esc_html( ucfirst( $job->style ) ); ?></td>
-          <!-- <td>
+          <td> <?php // Progress column ?>
             <div class="article-rewriter-progress">
               <div class="article-rewriter-progress-bar"
-                style="width: <?php echo $job->total_items > 0 ? ( $job->processed_items / $job->total_items * 100 ) : 0; ?>%">
+                style="width: <?php echo $job->total > 0 ? round( ( $job->processed / $job->total * 100 ) ) : 0; ?>%">
               </div>
               <div class="article-rewriter-progress-text">
-                <?php echo date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $job->created_at ) ); ?>
+                <?php echo esc_html( $job->processed ); ?> / <?php echo esc_html( $job->total ); ?>
               </div>
             </div>
-            <div class="article-rewriter-progress-info">
-              <?php echo $job->processed_items; ?> / <?php echo $job->total_items; ?>
-              <?php if ( $job->failed_items > 0 ) : ?>
-              <span class="article-rewriter-failed-items">(<?php echo $job->failed_items; ?>
-                <?php _e( 'failed', 'article-rewriter' ); ?>)</span>
-              <?php endif; ?>
-            </div>
-          </td> -->
-          <td>
+          </td>
+          <td> <?php // Created column ?>
             <?php echo date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $job->created_at ) ); ?>
+          </td>
+          <td class="article-rewriter-batch-updated"> <?php // Updated column ?>
+            <?php echo date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), strtotime( $job->updated_at ) ); ?>
+          </td>
+          <td> <?php // Actions column ?>
+            <a href="#" class="article-rewriter-batch-action" data-action="view"
+              data-job-id="<?php echo esc_attr( $job->id ); ?>"><?php _e('View', 'article-rewriter'); ?></a>
+            <?php if ($job->status === 'pending' || $job->status === 'processing'): ?>
+            | <a href="#" class="article-rewriter-batch-action" data-action="cancel"
+              data-job-id="<?php echo esc_attr( $job->id ); ?>"><?php _e('Cancel', 'article-rewriter'); ?></a>
+            <?php endif; ?>
+            | <a href="#" class="article-rewriter-batch-action delete" data-action="delete"
+              data-job-id="<?php echo esc_attr( $job->id ); ?>"><?php _e('Delete', 'article-rewriter'); ?></a>
           </td>
         </tr>
         <?php endforeach; ?>
@@ -237,81 +243,11 @@ $posts = get_posts( array(
 
   <div class="article-rewriter-card">
     <h2><?php _e( 'Batch Job Details', 'article-rewriter' ); ?></h2>
-    <div id="article-rewriter-batch-details">
-      <p><?php _e( 'Select a batch job to view details.', 'article-rewriter' ); ?></p>
+    <div id="article-rewriter-batch-job-details"> <?php // Updated ID ?>
+      <p><?php _e( 'Click "View" on a batch job to see details.', 'article-rewriter' ); ?></p>
+      <?php // Updated placeholder text ?>
     </div>
   </div>
 </div>
 
-<script type="text/javascript">
-jQuery(document).ready(function($) {
-  // Select all posts
-  $('#select-all-posts').on('change', function() {
-    var isChecked = $(this).prop('checked');
-    $('input[name="post_ids[]"]').prop('checked', isChecked);
-  });
-
-  // Confirm batch creation
-  $('form').on('submit', function(e) {
-    var selectedPosts = $('input[name="post_ids[]"]:checked').length;
-
-    if (selectedPosts === 0) {
-      alert('<?php echo esc_js( __( 'Please select at least one post to rewrite.', 'article-rewriter' ) ); ?>');
-      e.preventDefault();
-      return false;
-    }
-
-    var batchSize = <?php echo get_option( 'article_rewriter_batch_size', 10 ); ?>;
-
-    if (selectedPosts > batchSize) {
-      alert('You can only select up to ' + batchSize + ' posts at once.');
-      e.preventDefault();
-      return false;
-    }
-
-    if (!confirm(
-        'Are you sure you want to create a batch job to rewrite these posts? This may take some time.')) {
-      e.preventDefault();
-      return false;
-    }
-
-    return true;
-  });
-
-  // View batch job details
-  $('.article-rewriter-status').on('click', function() {
-    var jobId = $(this).closest('tr').find('td:first').text();
-
-    $.ajax({
-      url: ajaxurl,
-      type: 'POST',
-      data: {
-        action: 'article_rewriter_get_batch_status',
-        batch_id: jobId,
-        nonce: '<?php echo wp_create_nonce( 'article_rewriter_nonce' ); ?>'
-      },
-      success: function(response) {
-        if (response.success) {
-          var job = response.data;
-          var html = '<h3>Batch Job #' + job.id + '</h3>';
-          html += '<p><strong>Status:</strong> ' + job.status + '</p>';
-          html += '<p><strong>API:</strong> ' + job.api_used + '</p>';
-          html += '<p><strong>Style:</strong> ' + job.rewrite_style + '</p>';
-          html += '<p><strong>Progress:</strong> ' + job.processed_items + ' / ' + job.total_items +
-            '</p>';
-          html += '<p><strong>Failed:</strong> ' + job.failed_items + '</p>';
-          html += '<p><strong>Created:</strong> ' + job.created_at + '</p>';
-          html += '<p><strong>Updated:</strong> ' + job.updated_at + '</p>';
-
-          $('#article-rewriter-batch-details').html(html);
-        } else {
-          $('#article-rewriter-batch-details').html('<p>Error loading batch job details.</p>');
-        }
-      },
-      error: function() {
-        $('#article-rewriter-batch-details').html('<p>Error loading batch job details.</p>');
-      }
-    });
-  });
-});
-</script>
+<?php // Removed inline script block ?>

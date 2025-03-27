@@ -1,26 +1,33 @@
-# Project Brief: WordPress Article Rewriter Plugin
+# Project Brief: Article Rewriter WordPress Plugin
 
-## Overview
-A WordPress plugin that enables automatic rewriting of articles using various cloud-based AI APIs. The plugin integrates with both Gutenberg and Classic Editor, supports batch processing of multiple articles, and includes a licensing system based on Envato Purchase Code validation.
+## 1. Project Overview
 
-## Core Requirements
-1. **AI Integration**: Connect with multiple cloud-based AI services (OpenAI, DeepSeek, etc.) for article rewriting
-2. **Editor Support**: Seamless integration with both Gutenberg blocks and Classic Editor
-3. **Batch Processing**: Ability to rewrite multiple articles in a queue system
-4. **Licensing System**: Envato Purchase Code validation with one-domain-per-license restriction
-5. **User Interface**: Intuitive controls for rewriting options and settings
+This project is a WordPress plugin named "Article Rewriter". Based on the file structure, it appears to provide functionality for rewriting article content within the WordPress environment.
 
-## Goals
-- Create a user-friendly interface for article rewriting
-- Ensure high-quality rewritten content through AI integration
-- Provide flexible configuration options for different rewriting styles
-- Implement secure and reliable licensing validation
-- Support efficient batch processing for multiple articles
-- Maintain WordPress best practices and coding standards
+## 2. Core Requirements
 
-## Success Criteria
-- Plugin works flawlessly with both Gutenberg and Classic Editor
-- Multiple AI services can be configured and used
-- Batch processing handles articles efficiently
-- Licensing system correctly validates and restricts usage
-- Settings are intuitive and comprehensive
+*   Integrate with the WordPress admin interface.
+*   Provide article rewriting capabilities using external APIs (Confirmed: **DeepSeek, OpenAI, and others** mentioned).
+*   Support both classic and block editors (suggested by `assets/css` and `assets/js` files).
+*   Include batch processing functionality (`class-article-rewriter-batch.php`).
+*   Manage licensing (`class-article-rewriter-license.php`).
+*   Handle activation/deactivation hooks (`class-article-rewriter-activator.php`, `class-article-rewriter-deactivator.php`).
+*   Support internationalization (`class-article-rewriter-i18n.php`, `languages/`).
+
+## 3. Goals
+
+*   Provide users with a tool to easily rewrite WordPress post/page content.
+*   Offer settings for configuration and license management.
+*   Ensure compatibility with standard WordPress editor experiences.
+
+## 4. Scope
+
+*   **In Scope:** Core rewriting functionality, admin settings, editor integration, batch processing, licensing.
+*   **Out of Scope:** (To be determined - initially assuming no external integrations beyond the rewriting API).
+
+## 5. Key Stakeholders
+
+*   Plugin users (WordPress site administrators/editors).
+*   Plugin developer(s).
+
+*(This is an initial assessment based on file structure. It will be refined as more context is gathered.)*

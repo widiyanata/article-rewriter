@@ -66,57 +66,64 @@ class Article_Rewriter_License {
      * @since    1.0.0
      */
     public function handle_activate_license() {
-        // Verify the nonce
-        if (!wp_verify_nonce($_POST['_wpnonce'], 'article_rewriter_activate_license')) {
-            wp_die(__('Security check failed.', 'article-rewriter'));
+        // Verify the nonce - Use the nonce created in Article_Rewriter_Admin::enqueue_scripts
+        if (!check_ajax_referer('article_rewriter_nonce', 'nonce', false)) {
+            wp_send_json_error(array('message' => __('Security check failed.', 'article-rewriter')));
         }
 
         // Check if user has permission
         if (!current_user_can('manage_options')) {
-            wp_die(__('You do not have sufficient permissions to perform this action.', 'article-rewriter'));
+            wp_send_json_error(array('message' => __('You do not have sufficient permissions to perform this action.', 'article-rewriter')));
         }
 
         // Check if purchase code is provided
         if (empty($_POST['purchase_code'])) {
-            wp_die(__('Please enter a purchase code.', 'article-rewriter'));
+            wp_send_json_error(array('message' => __('Please enter a purchase code.', 'article-rewriter')));
         }
 
         // Sanitize the purchase code
         $purchase_code = sanitize_text_field($_POST['purchase_code']);
 
         // Verify the purchase code with the license server
-        $response = $this->verify_purchase_code($purchase_code);
+        $response = $this->verify_purchase_code($purchase_code); // Placeholder logic
         if (is_wp_error($response)) {
-            wp_die($response->get_error_message());
+            wp_send_json_error(array('message' => $response->get_error_message()));
         }
 
-        // Save the license information
-        update_option('article_rewriter_license_key', $purchase_code);
-        update_option('article_rewriter_license_status', 'active');
+        // Assuming placeholder verification is successful
+        if (isset($response['success']) && $response['success']) {
+            // Save the license information
+            update_option('article_rewriter_license_key', $purchase_code);
+            update_option('article_rewriter_license_status', 'active');
 
-        // Get the current domain
-        $domain = home_url();
+            // Get the current domain
+            $domain = home_url();
 
-        // Save the domain and activation date
-        $activation_data = array(
-            'domain' => $domain,
-            'activated_at' => current_time('mysql'),
-            'expires_at' => date('Y-m-d H:i:s', strtotime('+1 year', current_time('timestamp'))),
-        );
+            // Save the domain and activation date (use data from response if available)
+            $expires_at = $response['expires_at'] ?? date('Y-m-d H:i:s', strtotime('+1 year', current_time('timestamp')));
+            $activation_data = array(
+                'domain' => $domain,
+                'activated_at' => current_time('mysql'),
+                'expires_at' => $expires_at,
+            );
 
-        // Save the activation data
-        foreach ($activation_data as $key => $value) {
-            update_option('article_rewriter_license_' . $key, $value);
+            // Save the activation data
+            foreach ($activation_data as $key => $value) {
+                update_option('article_rewriter_license_' . $key, $value);
+            }
+
+            // Schedule a daily check for license validity
+            if (!wp_next_scheduled('article_rewriter_license_check')) {
+                wp_schedule_event(time(), 'daily', 'article_rewriter_license_check');
+            }
+
+            // Send success response
+            wp_send_json_success(array('message' => __('License activated successfully.', 'article-rewriter')));
+
+        } else {
+            // Handle verification failure from server (if implemented)
+             wp_send_json_error(array('message' => $response['message'] ?? __('License verification failed.', 'article-rewriter')));
         }
-
-        // Schedule a daily check for license validity
-        if (!wp_next_scheduled('article_rewriter_license_check')) {
-            wp_schedule_event(time(), 'daily', 'article_rewriter_license_check');
-        }
-
-        // Redirect back to the license page
-        wp_redirect(admin_url('admin.php?page=article-rewriter-license&activated=true'));
-        exit;
     }
 
     /**
@@ -125,34 +132,40 @@ class Article_Rewriter_License {
      * @since    1.0.0
      */
     public function handle_deactivate_license() {
-        // Verify the nonce
-        if (!wp_verify_nonce($_POST['_wpnonce'], 'article_rewriter_deactivate_license')) {
-            wp_die(__('Security check failed.', 'article-rewriter'));
+        // Verify the nonce - Use the nonce name sent by JS
+        // Note: JS uses 'article_rewriter_nonce', let's assume that's correct for both activate/deactivate
+        if (!check_ajax_referer('article_rewriter_nonce', 'nonce', false)) {
+            wp_send_json_error(array('message' => __('Security check failed.', 'article-rewriter')));
         }
 
         // Check if user has permission
         if (!current_user_can('manage_options')) {
-            wp_die(__('You do not have sufficient permissions to perform this action.', 'article-rewriter'));
+            wp_send_json_error(array('message' => __('You do not have sufficient permissions to perform this action.', 'article-rewriter')));
         }
 
         // Get the license key
         $license_key = get_option('article_rewriter_license_key');
 
-        // Deactivate the license with the license server
-        $this->deactivate_license($license_key);
+        // Deactivate the license with the license server (Placeholder logic)
+        $response = $this->deactivate_license($license_key);
 
-        // Update the license status
-        update_option('article_rewriter_license_status', 'inactive');
+        // Assuming placeholder deactivation is successful
+        if (isset($response['success']) && $response['success']) {
+            // Update the license status
+            update_option('article_rewriter_license_status', 'inactive');
 
-        // Clear the scheduled license check
-        $timestamp = wp_next_scheduled('article_rewriter_license_check');
-        if ($timestamp) {
-            wp_clear_scheduled_hook('article_rewriter_license_check');
+            // Clear the scheduled license check
+            $timestamp = wp_next_scheduled('article_rewriter_license_check');
+            if ($timestamp) {
+                wp_clear_scheduled_hook('article_rewriter_license_check');
+            }
+
+            // Send success response
+            wp_send_json_success(array('message' => __('License deactivated successfully.', 'article-rewriter')));
+        } else {
+             // Handle deactivation failure from server (if implemented)
+             wp_send_json_error(array('message' => $response['message'] ?? __('License deactivation failed.', 'article-rewriter')));
         }
-
-        // Redirect back to the license page
-        wp_redirect(admin_url('admin.php?page=article-rewriter-license&deactivated=true'));
-        exit;
     }
 
     /**

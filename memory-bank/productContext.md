@@ -1,51 +1,32 @@
-# Product Context: WordPress Article Rewriter Plugin
+# Product Context: Article Rewriter WordPress Plugin
 
-## Problem Statement
-Content creators and website managers often need to:
-- Repurpose existing content for different audiences
-- Update older articles with fresh perspectives
-- Create variations of content for SEO purposes
-- Save time on manual rewriting tasks
-- Maintain content quality while scaling production
+## 1. Problem Solved
 
-Manual rewriting is time-consuming and resource-intensive, while existing automated solutions often produce poor-quality results or lack integration with WordPress workflows.
+This plugin likely addresses the need for WordPress users to:
+*   Quickly generate variations of existing content.
+*   Refresh old articles without starting from scratch.
+*   Improve SEO by creating unique content from existing posts.
+*   Overcome writer's block by providing alternative phrasing.
 
-## Solution
-The Article Rewriter Plugin solves these problems by:
-1. Leveraging advanced AI models for high-quality content rewriting
-2. Integrating directly into the WordPress editing experience
-3. Supporting batch processing for efficiency at scale
-4. Providing customization options for different rewriting styles
-5. Ensuring proper licensing and security
+## 2. Target Audience
 
-## User Experience Goals
-- **Seamless Integration**: The plugin should feel like a natural extension of WordPress
-- **Minimal Learning Curve**: Users should be able to rewrite content with minimal training
-- **Flexibility**: Support for different rewriting styles and AI services
-- **Reliability**: Consistent results with proper error handling
-- **Efficiency**: Batch processing and background operations to avoid disrupting workflow
+*   WordPress site owners, administrators, and content editors.
+*   Users who manage blogs, news sites, or content-heavy websites.
+*   Individuals or teams looking for content generation assistance.
 
-## Target Users
-1. **Content Managers**: Responsible for maintaining large volumes of content
-2. **SEO Specialists**: Need content variations for ranking purposes
-3. **Blog Owners**: Want to refresh existing content
-4. **Marketing Teams**: Repurpose content across different channels
-5. **Publishers**: Need to adapt content for different audiences
+## 3. How It Should Work (Initial Assumptions)
 
-## User Workflows
+*   Users can select text within the WordPress editor (Classic or Block) and trigger a rewrite action.
+*   Alternatively, users might be able to rewrite entire posts/pages via an admin interface or a meta box.
+*   A batch processing feature allows rewriting multiple posts/pages simultaneously.
+*   Settings allow users to configure API keys (for the rewriting service), potentially select rewriting modes/tones, and manage their license.
+*   The plugin integrates seamlessly into the WordPress admin workflow.
 
-### Single Article Rewriting
-1. User selects content in editor
-2. User clicks rewrite button/block
-3. User selects rewriting options
-4. System processes the content through selected AI
-5. Rewritten content is presented for review
-6. User accepts, modifies, or rejects the rewritten content
+## 4. User Experience Goals
 
-### Batch Processing
-1. User selects multiple articles from a list
-2. User configures batch rewriting options
-3. System queues articles for processing
-4. Background processing rewrites articles
-5. User receives notification when complete
-6. User reviews and publishes rewritten articles
+*   **Intuitive:** Easy to understand and use, even for non-technical users.
+*   **Efficient:** Speeds up the content creation/modification process.
+*   **Integrated:** Feels like a natural part of the WordPress experience.
+*   **Reliable:** Consistently produces usable rewritten content.
+
+*(This is an initial assessment based on file structure and the project brief. It will be refined as more context is gathered.)*

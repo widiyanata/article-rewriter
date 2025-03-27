@@ -1,0 +1,2 @@
+# Batch process
+ kayanya masih belum selesai integrasinya, ada javascript (article-rewriter-admin.js) untuk handle frontend (admin/partials/article-rewriter-admin-batch.php) tapi di frontend tidak sesuai dengan elemen yang ditarger di javascript. klarifikasi dulu mau pakai yang mana, mau pakai js atau frontend sekarang, kalau pakai js maka update frontend dan action hook di backend

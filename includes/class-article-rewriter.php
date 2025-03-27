@@ -221,8 +221,14 @@ class Article_Rewriter {
 
         $plugin_batch = new Article_Rewriter_Batch($this->get_plugin_name(), $this->get_version());
 
-        $this->loader->add_action('admin_post_article_rewriter_start_batch', $plugin_batch, 'handle_start_batch');
+        // AJAX hooks
+        $this->loader->add_action('wp_ajax_article_rewriter_start_batch', $plugin_batch, 'handle_start_batch'); // Changed from admin_post_
         $this->loader->add_action('wp_ajax_article_rewriter_get_batch_jobs_status', $plugin_batch, 'handle_get_batch_jobs_status');
+        $this->loader->add_action('wp_ajax_article_rewriter_get_batch_job', $plugin_batch, 'handle_get_batch_job'); // Added missing handler
+        $this->loader->add_action('wp_ajax_article_rewriter_cancel_batch_job', $plugin_batch, 'handle_cancel_batch_job'); // Added missing handler
+        $this->loader->add_action('wp_ajax_article_rewriter_delete_batch_job', $plugin_batch, 'handle_delete_batch_job'); // Added missing handler
+
+        // Cron hook
         $this->loader->add_action('article_rewriter_process_batch', $plugin_batch, 'process_batch');
     }
 
@@ -237,9 +243,14 @@ class Article_Rewriter {
 
         $plugin_license = new Article_Rewriter_License($this->get_plugin_name(), $this->get_version());
 
-        $this->loader->add_action('admin_post_article_rewriter_activate_license', $plugin_license, 'handle_activate_license');
-        $this->loader->add_action('admin_post_article_rewriter_deactivate_license', $plugin_license, 'handle_deactivate_license');
+        // AJAX hooks
+        $this->loader->add_action('wp_ajax_article_rewriter_activate_license', $plugin_license, 'handle_activate_license'); // Changed from admin_post_
+        $this->loader->add_action('wp_ajax_article_rewriter_deactivate_license', $plugin_license, 'handle_deactivate_license'); // Changed from admin_post_
+
+        // Cron hook
         $this->loader->add_action('article_rewriter_license_check', $plugin_license, 'check_license');
+
+        // Admin notice hook
         $this->loader->add_action('admin_notices', $plugin_license, 'admin_notices');
     }
 

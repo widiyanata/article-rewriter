@@ -1,65 +1,61 @@
-# Progress: WordPress Article Rewriter Plugin
+# Progress: Article Rewriter WordPress Plugin
 
-## Project Status: Initial Implementation
+## 1. What Works (Confirmed & Assumed)
 
-The project is currently in the initial implementation phase. We are setting up the basic plugin structure and core components.
+*   **Confirmed:** Plugin installs, activates (`Article_Rewriter_Activator`), and deactivates (`Article_Rewriter_Deactivator`) via standard WordPress hooks.
+*   **Confirmed:** Plugin initializes by instantiating `Article_Rewriter` and calling its `run()` method, which uses `Article_Rewriter_Loader` to register hooks.
+*   **Confirmed:** Admin menus created (Main, Settings, Batch, License).
+*   **Confirmed:** Admin settings registered via Settings API (API keys, defaults, batch size, editor toggles).
+*   **Confirmed:** Admin CSS (`article-rewriter-admin.css`) and JS (`article-rewriter-admin.js`) are enqueued.
+*   **Confirmed:** Data (nonce, settings, strings, etc.) passed to admin JS via `wp_localize_script`.
+*   **Confirmed:** Block Editor integration via `build/index.js` (requires build step), CSS, and `wp_localize_script`.
+*   **Confirmed:** Classic Editor integration via TinyMCE plugin (`article-rewriter-classic-editor.js`), button, CSS, `wp_localize_script`, and inline modal HTML/JS.
+*   **Confirmed:** Both editors use REST endpoint `POST article-rewriter/v1/rewrite`. Classic editor also uses `GET article-rewriter/v1/history/{post_id}`.
+*   **Confirmed:** Editor integrations and REST API endpoints check for active license status and `edit_posts` capability.
+*   **Confirmed:** REST API handler (`Article_Rewriter_API`) routes requests to specific API methods (`rewrite_with_openai`, `rewrite_with_deepseek`).
+*   **Confirmed:** OpenAI and DeepSeek integrations use `wp_remote_post` to call external APIs.
+*   **Confirmed:** Rewrite history is saved to/retrieved from a custom DB table (`wp_article_rewriter_history`).
+*   **Confirmed:** Batch processing initiated via `admin-post` hook, uses WP Cron (`article_rewriter_process_batch`) for background processing, and provides status via AJAX (`wp_ajax_article_rewriter_get_batch_jobs_status`).
+*   **Confirmed:** Batch processing uses two custom DB tables (`wp_article_rewriter_batch`, `wp_article_rewriter_batch_items`).
+*   **Resolved:** Refactored duplicated API/history logic from `Article_Rewriter_API` and `Article_Rewriter_Batch` into `Article_Rewriter_Service`.
+*   **Confirmed:** License activation/deactivation handled via `admin-post` hooks.
+*   **Confirmed:** Daily license check scheduled via WP Cron (`article_rewriter_license_check`).
+*   **Confirmed:** Admin notices displayed based on license status (`article_rewriter_license_status` option).
+*   **Confirmed:** License key, status, domain, activation/expiry dates stored in options.
+*   **Identified Issue:** License server communication logic (`verify_purchase_code`, `deactivate_license`) are placeholders and need implementation.
+*   **Resolved:** Batch processing UI/JS selector mismatch resolved by updating HTML partial (`admin/partials/article-rewriter-admin-batch.php`).
+*   **Confirmed:** Custom DB tables (`wp_article_rewriter_history`, `wp_article_rewriter_batch`, `wp_article_rewriter_batch_items`) are created on activation via `dbDelta`.
+*   **Confirmed:** Default options (API keys, license status, etc.) are added on activation.
+*   **Confirmed:** Deactivation clears WP Cron hooks (`article_rewriter_license_check`, `article_rewriter_process_batch`) but does **not** remove DB tables or options.
+*   **Confirmed:** Block Editor JS (`src/index.js`) uses React and standard WP packages (`@wordpress/data`, `@wordpress/api-fetch`, `@wordpress/components`) to create a sidebar for rewriting the entire post content and viewing/applying history via REST API calls.
+*   **Confirmed:** Admin JS (`assets/js/article-rewriter-admin.js`) uses jQuery and AJAX for batch status polling/updates and license activation/deactivation.
+*   **Resolved:** Admin JS AJAX calls for batch start, license activation/deactivation are now correctly handled by updated PHP AJAX handlers using `wp_send_json_*`.
+*   **Resolved:** Added missing PHP AJAX handlers for batch job details, cancel, and delete.
+*   **Resolved:** Corrected nonce checks in all relevant PHP AJAX handlers to use `article_rewriter_nonce`.
+*   **Confirmed:** Classic Editor JS (`assets/js/article-rewriter-classic-editor.js`) uses jQuery to add a TinyMCE button, open a modal, and interact with the `/rewrite` and `/history` REST endpoints (including nonce handling).
 
-## Completed
-- [x] Initial project requirements gathering
-- [x] High-level architecture planning
-- [x] Component identification
-- [x] Memory bank documentation creation
+## 2. What's Left to Build / Verify
 
-## In Progress
-- [ ] Basic plugin structure setup
-- [ ] Main plugin file creation
-- [ ] Directory structure organization
-- [ ] Admin settings framework implementation
+*   **Core Rewriting Logic:** Implementation for OpenAI and DeepSeek confirmed. Anthropic and Gemini are placeholders. Need to verify the actual API calls work correctly.
+*   **API Integration:** Test OpenAI and DeepSeek integrations (both in REST API and Batch). Implement Anthropic and Gemini if required (consider refactoring duplicated code).
+*   **Editor Integration:** Test the actual rewrite functionality and UI within both Classic and Block editors. Verify Classic Editor modal and history functionality. Verify Block Editor sidebar functionality.
+*   **Batch Processing:** Verify the WP Cron job scheduling/execution. Test the batch UI (`admin/partials/article-rewriter-admin-batch.php`) and AJAX functionality (start, status, details, cancel, delete). Test handling of failed items.
+*   **Licensing:** Implement the actual license server communication logic in `verify_purchase_code` and `deactivate_license`. Test the activation/deactivation flow via AJAX. Verify the daily cron check correctly updates status (e.g., for expiry). Test admin notices.
+*   **Settings:** Verify that registered settings are correctly saved/retrieved and used by the plugin logic (e.g., API keys used in API calls, defaults applied). Check the UI in `admin/partials/article-rewriter-admin-settings.php`. Verify default options set on activation are appropriate.
+*   **Frontend Build Process:** Confirmed build uses `npm run build` via `@wordpress/scripts`. Verify the build process works and generates `build/index.js` correctly from `src/index.js`.
+*   **Error Handling:** Review error handling in `Article_Rewriter_Service`, REST handler, AJAX handlers, Block Editor JS, Classic Editor JS, Admin JS, and batch processing cron job.
+*   **Security:** Review REST API permission checks, nonce usage (REST, AJAX), data sanitization, and DB interactions. Check `dbDelta` usage.
+*   **Database:** Table creation confirmed. Deactivation cleanup only removes cron jobs, not tables/options. Consider if uninstall logic is needed/present.
+*   **Code Quality:** Code duplication addressed via `Article_Rewriter_Service`.
+*   **Internationalization:** Confirm strings are correctly domain-loaded (`article-rewriter` text domain confirmed) for translation.
 
-## Upcoming
-- [ ] Database schema implementation
-- [ ] API connector framework development
-- [ ] Editor integration components
-- [ ] Licensing system implementation
-- [ ] Batch processing system development
+## 3. Current Status
 
-## Known Issues
-- None at this stage (project in initial implementation)
+*   **Analysis Phase:** Initial code analysis complete. AJAX conflicts resolved, missing handlers added.
+*   **Code Functionality:** Core structure understood, but features largely untested. Known issues remain.
 
-## Milestones
+## 4. Known Issues / Blockers
 
-### Milestone 1: Foundation (In Progress)
-- [ ] Basic plugin structure
-- [ ] Main plugin file
-- [ ] Admin settings framework
-- [ ] Database tables creation
+*   Placeholder code for license server communication and some APIs (Anthropic, Gemini).
 
-### Milestone 2: API Integration (Not Started)
-- [ ] API connector framework
-- [ ] OpenAI integration
-- [ ] DeepSeek integration
-- [ ] Error handling and fallback mechanisms
-
-### Milestone 3: Editor Integration (Not Started)
-- [ ] Gutenberg block
-- [ ] Classic Editor button
-- [ ] Rewriting interface
-- [ ] Content processing pipeline
-
-### Milestone 4: Licensing System (Not Started)
-- [ ] Envato API integration
-- [ ] Domain validation
-- [ ] License management
-- [ ] Restriction mechanisms
-
-### Milestone 5: Batch Processing (Not Started)
-- [ ] Queue management
-- [ ] Background processing
-- [ ] Status tracking
-- [ ] Notification system
-
-### Milestone 6: Testing & Refinement (Not Started)
-- [ ] Comprehensive testing
-- [ ] Performance optimization
-- [ ] Documentation
-- [ ] Final polishing
+*(Analysis ongoing, focusing on resolving known issues.)*

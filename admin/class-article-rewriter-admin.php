@@ -97,22 +97,51 @@ class Article_Rewriter_Admin {
 
         wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . '../assets/js/article-rewriter-admin.js', array( 'jquery' ), $this->version, false );
 
-        // Localize the script with data for JavaScript
-        wp_localize_script( $this->plugin_name, 'article_rewriter_data', array(
+        // Localize the script with data for JavaScript - Use 'articleRewriterAdmin' to match JS usage
+        wp_localize_script( $this->plugin_name, 'articleRewriterAdmin', array(
             'ajax_url' => admin_url( 'admin-ajax.php' ),
-            'nonce' => wp_create_nonce( 'article_rewriter_nonce' ),
-            'strings' => array(
+            'nonce' => wp_create_nonce( 'article_rewriter_nonce' ), // This nonce is used by JS
+            'i18n' => array( // Changed 'strings' key to 'i18n' and added missing keys
+                // Original keys (some might be unused by admin.js now, but keep for safety)
                 'maxItemsExceeded' => __( 'You can only select up to %d items at once.', 'article-rewriter' ),
                 'noPostsSelected' => __( 'Please select at least one post to rewrite.', 'article-rewriter' ),
-                'confirmBatch' => __( 'Are you sure you want to create a batch job to rewrite these posts? This may take some time.', 'article-rewriter' ),
+                'confirmBatch' => __( 'Are you sure you want to create a batch job to rewrite these posts? This may take some time.', 'article-rewriter' ), // Used by old inline JS, keep for now
                 'selectContent' => __( 'Please select some content to rewrite.', 'article-rewriter' ),
                 'confirmRewrite' => __( 'Are you sure you want to rewrite this content? This will replace your current content.', 'article-rewriter' ),
-                'rewriteError' => __( 'An error occurred while rewriting the content.', 'article-rewriter' ),
+                'rewriteError' => __( 'An error occurred while rewriting the content.', 'article-rewriter' ), // Generic error
                 'rewriteSuccess' => __( 'Content rewritten successfully!', 'article-rewriter' ),
                 'rewrite' => __( 'Rewrite', 'article-rewriter' ),
                 'rewriting' => __( 'Rewriting...', 'article-rewriter' ),
                 'rewriteWith' => __( 'Rewrite with', 'article-rewriter' ),
                 'rewriteStyle' => __( 'Rewrite style', 'article-rewriter' ),
+
+                // Keys specifically used in article-rewriter-admin.js
+                'processing' => __('Processing...', 'article-rewriter'),
+                'submit' => __('Create Batch', 'article-rewriter'), // Default submit text
+                'error' => __('An error occurred. Please try again.', 'article-rewriter'), // More specific generic error
+                'loading' => __('Loading...', 'article-rewriter'),
+                'job_details' => __('Job Details', 'article-rewriter'),
+                'job_id' => __('Job ID', 'article-rewriter'),
+                'status' => __('Status', 'article-rewriter'),
+                'created' => __('Created', 'article-rewriter'),
+                'updated' => __('Updated', 'article-rewriter'),
+                'api' => __('API', 'article-rewriter'),
+                'style' => __('Style', 'article-rewriter'),
+                'progress' => __('Progress', 'article-rewriter'),
+                'posts' => __('Posts', 'article-rewriter'),
+                'post_title' => __('Post Title', 'article-rewriter'),
+                'actions' => __('Actions', 'article-rewriter'),
+                'view' => __('View', 'article-rewriter'),
+                'confirm_cancel' => __('Are you sure you want to cancel this batch job?', 'article-rewriter'),
+                'confirm_delete' => __('Are you sure you want to delete this batch job? This cannot be undone.', 'article-rewriter'),
+                'enter_purchase_code' => __('Please enter your purchase code.', 'article-rewriter'),
+                'activating' => __('Activating...', 'article-rewriter'),
+                'activation_error' => __('License activation failed. Please check the code and try again.', 'article-rewriter'),
+                'activate' => __('Activate License', 'article-rewriter'),
+                'confirm_deactivate' => __('Are you sure you want to deactivate this license?', 'article-rewriter'),
+                'deactivating' => __('Deactivating...', 'article-rewriter'),
+                'deactivation_error' => __('License deactivation failed.', 'article-rewriter'),
+                'deactivate' => __('Deactivate License', 'article-rewriter'),
             ),
             'apis' => array(
                 'openai' => get_option( 'article_rewriter_openai_api_key' ) ? true : false,
