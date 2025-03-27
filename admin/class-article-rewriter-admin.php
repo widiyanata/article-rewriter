@@ -146,6 +146,8 @@ class Article_Rewriter_Admin {
             'apis' => array(
                 'openai' => get_option( 'article_rewriter_openai_api_key' ) ? true : false,
                 'deepseek' => get_option( 'article_rewriter_deepseek_api_key' ) ? true : false,
+                'anthropic' => get_option( 'article_rewriter_anthropic_api_key' ) ? true : false, // Added
+                'gemini' => get_option( 'article_rewriter_gemini_api_key' ) ? true : false, // Added
             ),
             'styles' => array(
                 'standard' => __( 'Standard', 'article-rewriter' ),
@@ -229,6 +231,28 @@ class Article_Rewriter_Admin {
         register_setting(
             'article_rewriter_settings',
             'article_rewriter_deepseek_api_key',
+            array(
+                'type' => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+                'default' => '',
+            )
+        );
+
+        // Anthropic API Key
+        register_setting(
+            'article_rewriter_settings',
+            'article_rewriter_anthropic_api_key',
+            array(
+                'type' => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+                'default' => '',
+            )
+        );
+
+        // Gemini API Key
+        register_setting(
+            'article_rewriter_settings',
+            'article_rewriter_gemini_api_key',
             array(
                 'type' => 'string',
                 'sanitize_callback' => 'sanitize_text_field',

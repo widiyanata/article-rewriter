@@ -43,19 +43,23 @@
     *   Update Memory Bank (`progress.md`, `systemPatterns.md`) with Block Editor JS findings. (Done)
     *   Analyze `assets/js/article-rewriter-admin.js`. (Done)
     *   Update Memory Bank (`progress.md`, `systemPatterns.md`) with Admin JS findings and conflicts. (Done)
-    *   Analyze `assets/js/article-rewriter-classic-editor.js`. (Done - Confirmed TinyMCE plugin, jQuery modal, REST API interaction for rewrite/history)
+    *   Analyze `assets/js/article-rewriter-classic-editor.js`. (Done)
 *   Update Memory Bank (`progress.md`, `systemPatterns.md`) with Classic Editor JS findings. (Done)
 *   Core code analysis complete.
 *   Address identified issues:
     *   Resolved AJAX vs `admin-post` conflicts for Batch Start, License Activate/Deactivate. (Done)
     *   Added missing PHP AJAX handlers for Batch Get Details, Cancel, Delete. (Done)
 *   Update Memory Bank (`progress.md`, `systemPatterns.md`) with AJAX handler updates. (Done)
-*   Refactored duplicated API/history logic into `Article_Rewriter_Service`. (Done)
+*   Refactored duplicated API/history logic into `Article_Rewriter_Service` and provider classes. (Done)
 *   Updated `Article_Rewriter_API` and `Article_Rewriter_Batch` to use the service. (Done)
+*   Updated placeholder providers (Anthropic, Gemini) to return errors. (Done)
 *   Update Memory Bank (`progress.md`, `systemPatterns.md`, `.clinerules`) with refactoring details. (Done)
 *   Verified Batch UI/JS selectors match after HTML partial update. (Done)
-*   Update Memory Bank (`progress.md`) to reflect resolved batch UI/JS mismatch.
-*   Next: Address remaining issues (placeholder code).
+*   Update Memory Bank (`progress.md`) to reflect resolved batch UI/JS mismatch. (Done)
+*   Added settings for Anthropic/Gemini API keys. (Done)
+*   Implemented Anthropic and Gemini providers by extending `Abstract_API_Provider` and overriding `_make_api_request`. (Done)
+*   Update Memory Bank (`progress.md`, `systemPatterns.md`) with provider implementation details. (Done)
+*   Next: Testing of all providers and features. (Potentially make models configurable).
 
 ## 4. Active Decisions & Considerations
 
@@ -70,7 +74,8 @@
 *   **Confirmed build step required:** Block editor uses `build/index.js`. Build command is `npm run build` using `@wordpress/scripts`.
 *   **Resolved:** Batch/License AJAX vs `admin-post` conflicts.
 *   **Resolved:** Missing PHP AJAX handlers for batch details/cancel/delete.
-*   **Resolved:** Code duplication between API and Batch classes.
+*   **Resolved:** Code duplication between API and Batch classes (refactored to Service/Provider pattern).
 *   **Resolved:** Batch processing UI/JS selector mismatch.
+*   **Implemented:** Anthropic and Gemini providers now extend `Abstract_API_Provider` and override `_make_api_request` to handle their specific API formats.
 
-*(This context reflects the very beginning of the analysis process.)*
+*(Core refactoring and provider implementation complete. Testing and potential configuration enhancements remain.)*

@@ -15,10 +15,32 @@ if ( ! defined( 'WPINC' ) ) {
     die;
 }
 
+// Include provider classes
+require_once plugin_dir_path( __FILE__ ) . 'api-providers/abstract-api-provider.php'; // Add abstract class include
+require_once plugin_dir_path( __FILE__ ) . 'api-providers/class-openai-provider.php';
+require_once plugin_dir_path( __FILE__ ) . 'api-providers/class-deepseek-provider.php';
+require_once plugin_dir_path( __FILE__ ) . 'api-providers/class-anthropic-provider.php'; // Placeholder
+require_once plugin_dir_path( __FILE__ ) . 'api-providers/class-gemini-provider.php'; // Placeholder
+
+
 class Article_Rewriter_Service {
 
     /**
-     * Rewrite content using the selected API.
+     * Holds instances of the API providers.
+     * @var array<string, object>
+     */
+    private $providers = [];
+
+    public function __construct() {
+        // Instantiate providers and pass a reference to this service if needed by the provider
+        $this->providers['openai'] = new OpenAI_Provider($this); // Pass $this as it uses get_prompt_for_style
+        $this->providers['deepseek'] = new DeepSeek_Provider($this); // Pass $this as it uses get_prompt_for_style
+        $this->providers['anthropic'] = new Anthropic_Provider($this); // Pass $this for consistency, even if placeholder doesn't use it
+        $this->providers['gemini'] = new Gemini_Provider($this); // Pass $this for consistency, even if placeholder doesn't use it
+    }
+
+    /**
+     * Rewrite content using the selected API provider.
      *
      * @since    1.1.0
      * @param    string $content The content to rewrite.
@@ -27,208 +49,25 @@ class Article_Rewriter_Service {
      * @return   string|WP_Error The rewritten content or an error.
      */
     public function rewrite_content($content, $api, $style) {
-        switch ($api) {
-            case 'openai':
-                return $this->rewrite_with_openai($content, $style);
-            case 'deepseek':
-                return $this->rewrite_with_deepseek($content, $style);
-            case 'anthropic':
-                return $this->rewrite_with_anthropic($content, $style); // Placeholder
-            case 'gemini':
-                return $this->rewrite_with_gemini($content, $style); // Placeholder
-            default:
-                return new WP_Error('invalid_api', __('Invalid API provider selected in service.', 'article-rewriter'));
+        // Check if the provider instance exists and has the rewrite method
+        if (isset($this->providers[$api]) && method_exists($this->providers[$api], 'rewrite')) {
+            return $this->providers[$api]->rewrite($content, $style);
+        } else {
+            // Log this? Could indicate a configuration issue or attempt to use an unsupported API.
+            return new WP_Error('invalid_api_provider', __('Invalid or unsupported API provider selected.', 'article-rewriter'));
         }
     }
+
+    // Note: The individual private rewrite_with_* methods have been moved to their respective provider classes.
 
     /**
-     * Rewrite content using the OpenAI API.
-     *
-     * @since    1.1.0
-     * @param    string $content The content to rewrite.
-     * @param    string $style   The rewriting style to use.
-     * @return   string|WP_Error The rewritten content or an error.
-     */
-    private function rewrite_with_openai($content, $style) {
-        $api_key = get_option('article_rewriter_openai_api_key');
-        
-        if (empty($api_key)) {
-            return new WP_Error('api_key_missing', __('OpenAI API key is missing.', 'article-rewriter'));
-        }
-
-        $prompt = $this->get_prompt_for_style($style);
-        
-        $data = array(
-            'model' => 'gpt-4', // Consider making model configurable
-            'messages' => array(
-                array(
-                    'role' => 'system',
-                    'content' => $prompt,
-                ),
-                array(
-                    'role' => 'user',
-                    'content' => $content,
-                ),
-            ),
-            'temperature' => 0.7, // Consider making temperature configurable
-            'max_tokens' => 4000, // Consider making max_tokens configurable
-        );
-
-        $response = wp_remote_post(
-            'https://api.openai.com/v1/chat/completions',
-            array(
-                'headers' => array(
-                    'Authorization' => 'Bearer ' . $api_key,
-                    'Content-Type' => 'application/json',
-                ),
-                'body' => json_encode($data),
-                'timeout' => 60, // Consider making timeout configurable
-            )
-        );
-
-        if (is_wp_error($response)) {
-            return $response;
-        }
-
-        $response_code = wp_remote_retrieve_response_code($response);
-        if ($response_code !== 200) {
-            $body = wp_remote_retrieve_body($response);
-            $error_message = __('OpenAI API error: ', 'article-rewriter') . $response_code;
-            if ($body) {
-                 $error_data = json_decode($body, true);
-                 if (isset($error_data['error']['message'])) {
-                      $error_message .= ' - ' . $error_data['error']['message'];
-                 } else {
-                      $error_message .= ' - ' . $body;
-                 }
-            }
-            return new WP_Error('openai_error', $error_message);
-        }
-
-        $body = wp_remote_retrieve_body($response);
-        $data = json_decode($body, true);
-        
-        if (!isset($data['choices'][0]['message']['content'])) {
-            // Log the full response for debugging if needed
-            return new WP_Error('openai_error', __('Invalid response structure from OpenAI API.', 'article-rewriter'));
-        }
-
-        return $data['choices'][0]['message']['content'];
-    }
-
-    /**
-     * Rewrite content using the DeepSeek API.
-     *
-     * @since    1.1.0
-     * @param    string $content The content to rewrite.
-     * @param    string $style   The rewriting style to use.
-     * @return   string|WP_Error The rewritten content or an error.
-     */
-    private function rewrite_with_deepseek($content, $style) {
-        $api_key = get_option('article_rewriter_deepseek_api_key');
-        
-        if (empty($api_key)) {
-            return new WP_Error('api_key_missing', __('DeepSeek API key is missing.', 'article-rewriter'));
-        }
-
-        $prompt = $this->get_prompt_for_style($style);
-        
-        $data = array(
-            'model' => 'deepseek-chat', // Consider making model configurable
-            'messages' => array(
-                array(
-                    'role' => 'system',
-                    'content' => $prompt,
-                ),
-                array(
-                    'role' => 'user',
-                    'content' => $content,
-                ),
-            ),
-            'temperature' => 0.7, // Consider making temperature configurable
-            'max_tokens' => 4000, // Consider making max_tokens configurable
-        );
-
-        $response = wp_remote_post(
-            'https://api.deepseek.com/v1/chat/completions',
-            array(
-                'headers' => array(
-                    'Authorization' => 'Bearer ' . $api_key,
-                    'Content-Type' => 'application/json',
-                ),
-                'body' => json_encode($data),
-                'timeout' => 60, // Consider making timeout configurable
-            )
-        );
-
-        if (is_wp_error($response)) {
-            return $response;
-        }
-
-        $response_code = wp_remote_retrieve_response_code($response);
-        if ($response_code !== 200) {
-             $body = wp_remote_retrieve_body($response);
-             $error_message = __('DeepSeek API error: ', 'article-rewriter') . $response_code;
-             if ($body) {
-                 $error_data = json_decode($body, true);
-                 if (isset($error_data['error']['message'])) {
-                      $error_message .= ' - ' . $error_data['error']['message'];
-                 } else {
-                      $error_message .= ' - ' . $body;
-                 }
-             }
-             return new WP_Error('deepseek_error', $error_message);
-        }
-
-        $body = wp_remote_retrieve_body($response);
-        $data = json_decode($body, true);
-        
-        if (!isset($data['choices'][0]['message']['content'])) {
-             // Log the full response for debugging if needed
-            return new WP_Error('deepseek_error', __('Invalid response structure from DeepSeek API.', 'article-rewriter'));
-        }
-
-        return $data['choices'][0]['message']['content'];
-    }
-
-     /**
-     * Rewrite content using the Anthropic API (Placeholder).
-     *
-     * @since    1.1.0
-     * @param    string $content The content to rewrite.
-     * @param    string $style   The rewriting style to use.
-     * @return   string|WP_Error The rewritten content or an error.
-     */
-    private function rewrite_with_anthropic($content, $style) {
-        // Implementation for Anthropic API
-        // This is a placeholder for future implementation
-        // return new WP_Error('not_implemented', __('Anthropic API integration is not yet implemented.', 'article-rewriter'));
-        return $content; // Returning original content for now
-    }
-
-    /**
-     * Rewrite content using the Google Gemini API (Placeholder).
-     *
-     * @since    1.1.0
-     * @param    string $content The content to rewrite.
-     * @param    string $style   The rewriting style to use.
-     * @return   string|WP_Error The rewritten content or an error.
-     */
-    private function rewrite_with_gemini($content, $style) {
-        // Implementation for Google Gemini API
-        // This is a placeholder for future implementation
-        // return new WP_Error('not_implemented', __('Google Gemini API integration is not yet implemented.', 'article-rewriter'));
-        return $content; // Returning original content for now
-    }
-
-    /**
-     * Get the prompt for the selected style.
+     * Get the prompt for the selected style. (Public, as providers need it)
      *
      * @since    1.1.0
      * @param    string $style The rewriting style.
      * @return   string The prompt.
      */
-    private function get_prompt_for_style($style) {
+    public function get_prompt_for_style($style) { // Changed visibility to public
         // Centralized prompt logic
         switch ($style) {
             case 'formal':

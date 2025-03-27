@@ -17,7 +17,7 @@
 *   **Confirmed:** Rewrite history is saved to/retrieved from a custom DB table (`wp_article_rewriter_history`).
 *   **Confirmed:** Batch processing initiated via `admin-post` hook, uses WP Cron (`article_rewriter_process_batch`) for background processing, and provides status via AJAX (`wp_ajax_article_rewriter_get_batch_jobs_status`).
 *   **Confirmed:** Batch processing uses two custom DB tables (`wp_article_rewriter_batch`, `wp_article_rewriter_batch_items`).
-*   **Resolved:** Refactored duplicated API/history logic from `Article_Rewriter_API` and `Article_Rewriter_Batch` into `Article_Rewriter_Service`.
+*   **Resolved:** Refactored API logic into `Article_Rewriter_Service` and individual provider classes (`OpenAI_Provider`, `DeepSeek_Provider`, `Anthropic_Provider`, `Gemini_Provider`) extending `Abstract_API_Provider`. History saving remains in `Article_Rewriter_Service`.
 *   **Confirmed:** License activation/deactivation handled via `admin-post` hooks.
 *   **Confirmed:** Daily license check scheduled via WP Cron (`article_rewriter_license_check`).
 *   **Confirmed:** Admin notices displayed based on license status (`article_rewriter_license_status` option).
@@ -36,26 +36,26 @@
 
 ## 2. What's Left to Build / Verify
 
-*   **Core Rewriting Logic:** Implementation for OpenAI and DeepSeek confirmed. Anthropic and Gemini are placeholders. Need to verify the actual API calls work correctly.
-*   **API Integration:** Test OpenAI and DeepSeek integrations (both in REST API and Batch). Implement Anthropic and Gemini if required (consider refactoring duplicated code).
+*   **Core Rewriting Logic:** Implementation for OpenAI, DeepSeek, Anthropic, and Gemini completed using the Service/Provider pattern. Need to verify the actual API calls work correctly.
+*   **API Integration:** Test all provider integrations (OpenAI, DeepSeek, Anthropic, Gemini).
 *   **Editor Integration:** Test the actual rewrite functionality and UI within both Classic and Block editors. Verify Classic Editor modal and history functionality. Verify Block Editor sidebar functionality.
 *   **Batch Processing:** Verify the WP Cron job scheduling/execution. Test the batch UI (`admin/partials/article-rewriter-admin-batch.php`) and AJAX functionality (start, status, details, cancel, delete). Test handling of failed items.
 *   **Licensing:** Implement the actual license server communication logic in `verify_purchase_code` and `deactivate_license`. Test the activation/deactivation flow via AJAX. Verify the daily cron check correctly updates status (e.g., for expiry). Test admin notices.
-*   **Settings:** Verify that registered settings are correctly saved/retrieved and used by the plugin logic (e.g., API keys used in API calls, defaults applied). Check the UI in `admin/partials/article-rewriter-admin-settings.php`. Verify default options set on activation are appropriate.
+*   **Settings:** Verify that registered settings are correctly saved/retrieved and used by the plugin logic (e.g., API keys used in API calls, defaults applied). Check the UI in `admin/partials/article-rewriter-admin-settings.php`. Verify default options set on activation are appropriate. Settings fields for Anthropic/Gemini keys added. Consider making models configurable.
 *   **Frontend Build Process:** Confirmed build uses `npm run build` via `@wordpress/scripts`. Verify the build process works and generates `build/index.js` correctly from `src/index.js`.
-*   **Error Handling:** Review error handling in `Article_Rewriter_Service`, REST handler, AJAX handlers, Block Editor JS, Classic Editor JS, Admin JS, and batch processing cron job.
+*   **Error Handling:** Review error handling in `Article_Rewriter_Service`, provider classes, REST handler, AJAX handlers, Block Editor JS, Classic Editor JS, Admin JS, and batch processing cron job.
 *   **Security:** Review REST API permission checks, nonce usage (REST, AJAX), data sanitization, and DB interactions. Check `dbDelta` usage.
 *   **Database:** Table creation confirmed. Deactivation cleanup only removes cron jobs, not tables/options. Consider if uninstall logic is needed/present.
-*   **Code Quality:** Code duplication addressed via `Article_Rewriter_Service`.
+*   **Code Quality:** API/History duplication addressed via Service/Provider pattern.
 *   **Internationalization:** Confirm strings are correctly domain-loaded (`article-rewriter` text domain confirmed) for translation.
 
 ## 3. Current Status
 
-*   **Analysis Phase:** Initial code analysis complete. AJAX conflicts resolved, missing handlers added.
-*   **Code Functionality:** Core structure understood, but features largely untested. Known issues remain.
+*   **Analysis & Refactoring Phase:** Complete. AJAX conflicts resolved, missing handlers added, API logic refactored, placeholder providers implemented.
+*   **Code Functionality:** Core structure refactored and providers implemented. Features require testing.
 
 ## 4. Known Issues / Blockers
 
-*   Placeholder code for license server communication and some APIs (Anthropic, Gemini).
+*   Placeholder code for license server communication.
 
-*(Analysis ongoing, focusing on resolving known issues.)*
+*(Refactoring and provider implementation complete. Testing phase is next.)*

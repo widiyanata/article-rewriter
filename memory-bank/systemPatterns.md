@@ -92,10 +92,10 @@ graph TD
         APIMethods -- handles /rewrite --> RewriteLogic{rewrite_with_api}
         APIMethods -- handles /history --> HistoryLogic{get_history}
         RewriteLogic -- calls --> Service[Article_Rewriter_Service]
-        Service -- calls --> OpenAIMethod[rewrite_with_openai]
-        Service -- calls --> DeepSeekMethod[rewrite_with_deepseek]
-        Service -- calls --> AnthropicMethod[rewrite_with_anthropic (Placeholder)]
-        Service -- calls --> GeminiMethod[rewrite_with_gemini (Placeholder)]
+        Service -- instantiates --> Providers{API Providers}
+        Service -- calls rewrite_content --> ProviderRewrite[Provider::rewrite]
+        ProviderRewrite -- calls _make_api_request --> BaseProvider[Abstract_API_Provider]
+        BaseProvider -- wp_remote_post --> ExternalAPI[(External Rewriting Service: OpenAI, DeepSeek, Anthropic, Gemini)]
         RewriteLogic -- calls --> ServiceSaveHistory[Service::save_history]
         ServiceSaveHistory -- writes to --> HistoryDB[(wp_article_rewriter_history table)]
         HistoryLogic -- reads from --> HistoryDB[(wp_article_rewriter_history table)]
@@ -145,9 +145,6 @@ graph TD
         DisplayNotices -- reads --> WpOptionsDb
         VerifyPurchase -- wp_remote_post (intended) --> ExternalLicense[(External License Service: widigital.com)]
         DeactivateServer -- wp_remote_post (intended) --> ExternalLicense
-
-        OpenAIMethod -- wp_remote_post --> ExternalAPI[(External Rewriting Service: OpenAI, DeepSeek, Anthropic, Gemini)]
-        DeepSeekMethod -- wp_remote_post --> ExternalAPI
     end
 
     WP --> PluginFile
@@ -159,6 +156,9 @@ graph TD
     style HistoryDB fill:#ccf,stroke:#333,stroke-width:2px
     style BatchDB fill:#cfc,stroke:#333,stroke-width:2px
     style BatchItemsDB fill:#cfc,stroke:#333,stroke-width:2px
+    style Service fill:#ffc,stroke:#333,stroke-width:1px
+    style Providers fill:#ffc,stroke:#333,stroke-width:1px
+    style BaseProvider fill:#ffc,stroke:#333,stroke-width:1px
 ```
 
-*(Diagram updated based on Batch class analysis. Includes batch DB tables, WP Cron usage, AJAX status check, and notes duplicated logic.)*
+*(Diagram updated after API provider refactoring.)*

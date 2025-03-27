@@ -6,7 +6,7 @@
 *   **WordPress Plugin:** Adhere to WordPress coding standards and best practices (hooks, security, localization).
 *   **External Dependencies:** Be mindful of the external rewriting API (OpenAI, DeepSeek implemented; Anthropic, Gemini placeholders) and licensing service (placeholders). Error handling and user feedback for these interactions are crucial. Editor/API features depend on an active license.
 *   **Build Process:** **Confirmed:** Build step required via `npm run build` (uses `@wordpress/scripts`). Compiles `src/index.js` to `build/index.js` for the Block Editor.
-*   **Code Quality:** **Resolved:** Duplicated API/history logic refactored into `Article_Rewriter_Service`.
+*   **Code Quality:** **Resolved:** Duplicated API/history logic refactored into `Article_Rewriter_Service` and provider classes extending `Abstract_API_Provider`.
 
 ## User Preferences & Workflow
 

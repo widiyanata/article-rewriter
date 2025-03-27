@@ -30,12 +30,12 @@ if ( ! defined( 'WPINC' ) ) {
   </div>
 
   <div class="article-rewriter-card">
-    <h2><?php _e( 'OpenAI API Settings', 'article-rewriter' ); ?></h2>
+    <h2><?php _e( 'API Keys', 'article-rewriter' ); ?></h2>
 
     <form method="post" action="options.php">
       <?php
             settings_fields( 'article_rewriter_settings' );
-            do_settings_sections( 'article_rewriter_settings' );
+            // We will render fields manually instead of using do_settings_sections
             ?>
 
       <table class="form-table">
@@ -63,6 +63,34 @@ if ( ! defined( 'WPINC' ) ) {
         </tr>
 
         <tr valign="top">
+          <th scope="row"><?php _e( 'Anthropic API Key', 'article-rewriter' ); ?></th>
+          <td>
+            <input type="password" name="article_rewriter_anthropic_api_key"
+              value="<?php echo esc_attr( get_option( 'article_rewriter_anthropic_api_key' ) ); ?>"
+              class="regular-text" />
+            <p class="description">
+              <?php _e( 'Enter your Anthropic API key. You can get one from <a href="https://console.anthropic.com/settings/keys" target="_blank">Anthropic Console</a>.', 'article-rewriter' ); ?>
+            </p>
+          </td>
+        </tr>
+
+        <tr valign="top">
+          <th scope="row"><?php _e( 'Google Gemini API Key', 'article-rewriter' ); ?></th>
+          <td>
+            <input type="password" name="article_rewriter_gemini_api_key"
+              value="<?php echo esc_attr( get_option( 'article_rewriter_gemini_api_key' ) ); ?>" class="regular-text" />
+            <p class="description">
+              <?php _e( 'Enter your Google Gemini API key. You can get one from <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a>.', 'article-rewriter' ); ?>
+            </p>
+          </td>
+        </tr>
+
+      </table>
+
+      <h2><?php _e( 'General Settings', 'article-rewriter' ); ?></h2>
+      <table class="form-table">
+
+        <tr valign="top">
           <th scope="row"><?php _e( 'Default API', 'article-rewriter' ); ?></th>
           <td>
             <select name="article_rewriter_default_api">
@@ -70,15 +98,17 @@ if ( ! defined( 'WPINC' ) ) {
                 <?php _e( 'OpenAI', 'article-rewriter' ); ?></option>
               <option value="deepseek" <?php selected( get_option( 'article_rewriter_default_api' ), 'deepseek' ); ?>>
                 <?php _e( 'DeepSeek', 'article-rewriter' ); ?></option>
+              <option value="anthropic" <?php selected( get_option( 'article_rewriter_default_api' ), 'anthropic' ); ?>>
+                <?php _e( 'Anthropic', 'article-rewriter' ); ?></option>
+              <option value="gemini" <?php selected( get_option( 'article_rewriter_default_api' ), 'gemini' ); ?>>
+                <?php _e( 'Google Gemini', 'article-rewriter' ); ?></option>
             </select>
             <p class="description">
               <?php _e( 'Select the default API to use for rewriting.', 'article-rewriter' ); ?>
             </p>
           </td>
         </tr>
-      </table>
 
-      <table class="form-table">
         <tr valign="top">
           <th scope="row"><?php _e( 'Default Rewrite Style', 'article-rewriter' ); ?></th>
           <td>
@@ -115,13 +145,14 @@ if ( ! defined( 'WPINC' ) ) {
         </tr>
       </table>
 
+      <h2><?php _e( 'Editor Integration', 'article-rewriter' ); ?></h2>
       <table class="form-table">
         <tr valign="top">
           <th scope="row"><?php _e( 'Gutenberg Integration', 'article-rewriter' ); ?></th>
           <td>
             <label>
               <input type="checkbox" name="article_rewriter_enable_gutenberg" value="yes"
-                <?php checked( get_option( 'article_rewriter_enable_gutenberg' ), 'yes' ); ?> />
+                <?php checked( get_option( 'article_rewriter_enable_gutenberg', 'yes' ), 'yes' ); ?> />
               <?php _e( 'Enable Gutenberg integration', 'article-rewriter' ); ?>
             </label>
             <p class="description">
@@ -135,7 +166,7 @@ if ( ! defined( 'WPINC' ) ) {
           <td>
             <label>
               <input type="checkbox" name="article_rewriter_enable_classic_editor" value="yes"
-                <?php checked( get_option( 'article_rewriter_enable_classic_editor' ), 'yes' ); ?> />
+                <?php checked( get_option( 'article_rewriter_enable_classic_editor', 'yes' ), 'yes' ); ?> />
               <?php _e( 'Enable Classic Editor integration', 'article-rewriter' ); ?>
             </label>
             <p class="description">
