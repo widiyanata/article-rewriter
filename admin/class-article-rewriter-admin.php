@@ -138,10 +138,12 @@ class Article_Rewriter_Admin {
                 'activating' => __('Activating...', 'article-rewriter'),
                 'activation_error' => __('License activation failed. Please check the code and try again.', 'article-rewriter'),
                 'activate' => __('Activate License', 'article-rewriter'),
+                'activateSuccess' => __('License activated successfully. Reloading...', 'article-rewriter'), // Added
                 'confirm_deactivate' => __('Are you sure you want to deactivate this license?', 'article-rewriter'),
                 'deactivating' => __('Deactivating...', 'article-rewriter'),
                 'deactivation_error' => __('License deactivation failed.', 'article-rewriter'),
                 'deactivate' => __('Deactivate License', 'article-rewriter'),
+                'deactivateSuccess' => __('License deactivated successfully. Reloading...', 'article-rewriter'), // Added
             ),
             'apis' => array(
                 'openai' => get_option( 'article_rewriter_openai_api_key' ) ? true : false,

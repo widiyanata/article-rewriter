@@ -18,7 +18,7 @@ if ( ! defined( 'WPINC' ) ) {
 
 // Get license information
 $license_status = get_option( 'article_rewriter_license_status', 'inactive' );
-$purchase_code = get_option( 'article_rewriter_purchase_code', '' );
+$purchase_code = get_option( 'article_rewriter_license_key', '' );
 $license_expires = get_option( 'article_rewriter_license_expires', '' );
 
 // Get domain
@@ -70,7 +70,7 @@ $domain = home_url();
       </p>
 
       <p class="description">
-        <?php echo sprintf( __( 'Your license is active. You can use Article Rewriter on %s.', 'article-rewriter' ), $domain ); ?>
+        <?php echo sprintf( __( 'Your license is active. You can use Article Rewriter on %s.', 'article-rewriter' ), esc_html($domain) ); ?>
       </p>
     </div>
 
@@ -80,17 +80,15 @@ $domain = home_url();
         <?php _e( 'If you want to use your license on another domain, you need to deactivate it first.', 'article-rewriter' ); ?>
       </p>
 
-      <form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
-        <input type="hidden" name="action" value="article_rewriter_deactivate_license" />
+      <!-- Removed form tags, button will trigger JS -->
+      <?php // Nonce can be retrieved from localized script data in JS ?>
 
-        <?php wp_nonce_field( 'article_rewriter_deactivate_license' ); ?>
-
-        <p class="submit">
-          <input type="submit" name="submit" id="submit" class="button button-primary"
-            value="<?php _e( 'Deactivate License', 'article-rewriter' ); ?>"
-            onclick="return confirm('Are you sure you want to deactivate your license?');" />
-        </p>
-      </form>
+      <p class="submit">
+        <button type="button" id="article-rewriter-deactivate-license-btn" class="button button-primary">
+          <?php _e( 'Deactivate License', 'article-rewriter' ); ?>
+        </button>
+      </p>
+      <div id="article-rewriter-deactivate-message" style="margin-top: 10px;"></div> <!-- Area for JS messages -->
     </div>
     <?php else : ?>
     <div class="article-rewriter-license-info">
@@ -104,10 +102,9 @@ $domain = home_url();
       <h3><?php _e( 'Activate License', 'article-rewriter' ); ?></h3>
       <p><?php _e( 'Enter your Envato purchase code to activate your license.', 'article-rewriter' ); ?></p>
 
-      <form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
-        <input type="hidden" name="action" value="article_rewriter_activate_license" />
-
-        <?php wp_nonce_field( 'article_rewriter_activate_license' ); ?>
+      <!-- Changed to trigger JS instead of direct post -->
+      <div id="article-rewriter-activate-form"> <?php // Changed form to div ?>
+        <?php // Nonce will be handled by JS ?>
 
         <table class="form-table">
           <tr valign="top">
@@ -124,10 +121,12 @@ $domain = home_url();
         </table>
 
         <p class="submit">
-          <input type="submit" name="submit" id="submit" class="button button-primary"
-            value="<?php _e( 'Activate License', 'article-rewriter' ); ?>" />
+          <button type="button" id="article-rewriter-activate-license-btn" class="button button-primary">
+            <?php _e( 'Activate License', 'article-rewriter' ); ?>
+          </button>
         </p>
-      </form>
+        <div id="article-rewriter-activate-message" style="margin-top: 10px;"></div> <!-- Area for JS messages -->
+      </div> <?php // End #article-rewriter-activate-form div ?>
 
       <div class="article-rewriter-license-help">
         <h3><?php _e( 'How to find your purchase code', 'article-rewriter' ); ?></h3>

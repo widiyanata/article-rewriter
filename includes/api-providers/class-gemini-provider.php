@@ -30,8 +30,7 @@ class Gemini_Provider extends Abstract_API_Provider {
     }
 
     protected function get_model_name() {
-        // TODO: Make this configurable via settings?
-        // Using 1.5 Pro as default for now, matching the placeholder
+        // Retrieve the saved model option, fallback to 'gemini-1.5-pro'
         return get_option('article_rewriter_gemini_model', 'gemini-1.5-pro'); 
     }
 
@@ -102,7 +101,6 @@ class Gemini_Provider extends Abstract_API_Provider {
         // --- Standard Error Handling (copied & adapted from abstract class) ---
         if (is_wp_error($response)) {
             // Log the specific WP_Error message if needed
-            // error_log('Gemini API Request Error: ' . $response->get_error_message());
             return new WP_Error($this->get_error_prefix() . '_request_failed', __('API request failed.', 'article-rewriter') . ' ' . $response->get_error_message());
         }
 
@@ -121,7 +119,6 @@ class Gemini_Provider extends Abstract_API_Provider {
                       $error_message .= ' - ' . substr(strip_tags($body), 0, 200); // Limit raw body length
                  }
              }
-             // error_log('Gemini API Response Error: ' . $error_message); // Log error
              return new WP_Error($this->get_error_prefix() . '_response_error', $error_message);
         }
         // --- End Standard Error Handling ---
@@ -136,11 +133,9 @@ class Gemini_Provider extends Abstract_API_Provider {
              if (isset($response_data['promptFeedback']['blockReason'])) {
                  $block_reason = $response_data['promptFeedback']['blockReason'];
                  $block_message = isset($response_data['promptFeedback']['blockReasonMessage']) ? $response_data['promptFeedback']['blockReasonMessage'] : 'Content blocked by safety settings.';
-                 // error_log('Gemini Content Blocked: ' . $block_reason . ' - ' . $block_message);
                  return new WP_Error($this->get_error_prefix() . '_content_blocked', sprintf(__('Content blocked by %s: %s', 'article-rewriter'), $this->get_provider_name(), $block_reason));
              }
              // Log the full response for debugging if structure is unexpected
-             // error_log('Gemini Invalid Response Structure: ' . $body);
             return new WP_Error($this->get_error_prefix() . '_invalid_response', sprintf(__('Invalid response structure from %s API.', 'article-rewriter'), $this->get_provider_name()));
         }
 

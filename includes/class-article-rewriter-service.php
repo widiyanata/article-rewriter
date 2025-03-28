@@ -49,9 +49,14 @@ class Article_Rewriter_Service {
      * @return   string|WP_Error The rewritten content or an error.
      */
     public function rewrite_content($content, $api, $style) {
+        // Sanitize API and Style parameters
+        $api = sanitize_key($api);
+        $style = sanitize_key($style);
+
         // Check if the provider instance exists and has the rewrite method
         if (isset($this->providers[$api]) && method_exists($this->providers[$api], 'rewrite')) {
-            return $this->providers[$api]->rewrite($content, $style);
+            // Pass potentially unsanitized $content, but sanitized $api and $style
+            return $this->providers[$api]->rewrite($content, $style); 
         } else {
             // Log this? Could indicate a configuration issue or attempt to use an unsupported API.
             return new WP_Error('invalid_api_provider', __('Invalid or unsupported API provider selected.', 'article-rewriter'));

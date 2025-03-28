@@ -140,7 +140,7 @@ $posts = get_posts( array(
               </td>
               <td>
                 <a href="<?php echo get_edit_post_link( $post->ID ); ?>" target="_blank">
-                  <?php echo get_the_title( $post->ID ); ?>
+                  <?php echo esc_html( get_the_title( $post->ID ) ); ?>
                 </a>
               </td>
               <td>

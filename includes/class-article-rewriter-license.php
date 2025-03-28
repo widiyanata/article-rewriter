@@ -57,7 +57,8 @@ class Article_Rewriter_License {
     public function __construct($plugin_name, $version) {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
-        $this->license_server = 'https://widigital.com/license-server/';
+        // Use the correct local development URL
+        $this->license_server = 'http://php-license-server.test/'; 
     }
 
     /**
@@ -90,7 +91,7 @@ class Article_Rewriter_License {
             wp_send_json_error(array('message' => $response->get_error_message()));
         }
 
-        // Assuming placeholder verification is successful
+        // Check server response structure and 'success' flag
         if (isset($response['success']) && $response['success']) {
             // Save the license information
             update_option('article_rewriter_license_key', $purchase_code);
@@ -124,6 +125,8 @@ class Article_Rewriter_License {
             // Handle verification failure from server (if implemented)
              wp_send_json_error(array('message' => $response['message'] ?? __('License verification failed.', 'article-rewriter')));
         }
+        // Ensure wp_die is called for AJAX handlers
+        wp_die(); 
     }
 
     /**
@@ -183,19 +186,41 @@ class Article_Rewriter_License {
             return;
         }
 
-        // Verify the license with the license server
-        $response = $this->verify_purchase_code($license_key);
+        // Verify the license status with the license server using the /verify endpoint.
+        $response = $this->_call_verify_endpoint($license_key); // Call new helper method
+
+        // Handle potential errors during the server check
         if (is_wp_error($response)) {
-            // If there's an error, deactivate the license
-            update_option('article_rewriter_license_status', 'inactive');
-            return;
+            // Log the error?
+            // error_log('Article Rewriter: Daily license check failed. ' . $response->get_error_message());
+            // Optionally, decide if connection errors should immediately deactivate, or just retry later.
+            // For now, let's assume connection errors don't change the status, allowing grace period.
+            return; // Exit without changing status on connection error
         }
 
-        // Check if the license has expired
-        $expires_at = get_option('article_rewriter_license_expires_at');
-        if (!empty($expires_at) && strtotime($expires_at) < current_time('timestamp')) {
-            // If the license has expired, deactivate it
-            update_option('article_rewriter_license_status', 'expired');
+        // Process the successful response from the server
+        if (isset($response['success']) && $response['success']) {
+            // Server confirms the license is valid in some way
+            // Check the specific status returned by the server (assuming 'status' key)
+            $server_status = $response['status'] ?? 'inactive'; // Default to inactive if status key missing
+
+            if ($server_status === 'active') {
+                // Server says active. Update local status and expiry if provided.
+                update_option('article_rewriter_license_status', 'active');
+                if (isset($response['expires_at'])) {
+                    update_option('article_rewriter_license_expires_at', $response['expires_at']);
+                }
+            } elseif ($server_status === 'expired') {
+                // Server says expired.
+                update_option('article_rewriter_license_status', 'expired');
+            } else {
+                // Server says inactive, revoked, or any other non-active status.
+                update_option('article_rewriter_license_status', 'inactive');
+            }
+        } else {
+            // Server responded successfully but indicated verification failure (e.g., invalid key, domain mismatch)
+            // error_log('Article Rewriter: License verification failed during daily check. Message: ' . ($response['message'] ?? 'Unknown reason'));
+            update_option('article_rewriter_license_status', 'inactive');
         }
     }
 
@@ -247,26 +272,62 @@ class Article_Rewriter_License {
      * @return   array|WP_Error The response from the license server or an error.
      */
     private function verify_purchase_code($purchase_code) {
-        // This is a placeholder for the actual verification process
-        // In a real implementation, you would make an API call to the Envato API
-        // or your own license server to verify the purchase code
-
-        // For demonstration purposes, we'll just check if the purchase code is not empty
-        if (empty($purchase_code)) {
-            return new WP_Error('invalid_purchase_code', __('Invalid purchase code.', 'article-rewriter'));
+        // Check if the server API key constant is defined
+        if (!defined('ARTICLE_REWRITER_SERVER_API_KEY') || empty(ARTICLE_REWRITER_SERVER_API_KEY)) {
+             // error_log('Article Rewriter: Server API Key is not defined.'); // Optional logging
+             return new WP_Error('server_key_missing', __('License server communication key is not configured.', 'article-rewriter'));
         }
 
-        // Check if the purchase code is already in use on another domain
-        // This would involve checking with your license server
+        $api_key = ARTICLE_REWRITER_SERVER_API_KEY;
+        $url = trailingslashit($this->license_server) . 'api/v1/licenses/activate'; // Assumed endpoint
         $domain = home_url();
 
-        // For demonstration purposes, we'll just return a success response
-        return array(
-            'success' => true,
-            'message' => 'Purchase code verified successfully.',
-            'domain' => $domain,
-            'expires_at' => date('Y-m-d H:i:s', strtotime('+1 year', current_time('timestamp'))),
+        $body = array(
+            'purchase_code' => $purchase_code, // Changed key name from licenseKey
+            'domain' => $domain,             // Changed from domainName
+            'pluginVersion' => $this->version,
+            'product_id' => $this->plugin_name // Changed from product
         );
+
+        $response = wp_remote_post($url, array(
+            'timeout' => 30, // Set a reasonable timeout
+            'headers' => array(
+                'Content-Type' => 'application/json',
+                'X-API-Key' => $api_key, // Server-to-server authentication key
+                'Accept' => 'application/json'
+            ),
+            'body' => json_encode($body),
+        ));
+
+        // Handle WP HTTP API errors
+        if (is_wp_error($response)) {
+            // Optional logging: error_log('Article Rewriter: License activation request failed. ' . $response->get_error_message());
+            return new WP_Error('request_failed', __('Could not connect to the license server.', 'article-rewriter') . ' (' . $response->get_error_code() . ' - ' . $response->get_error_message() . ')');
+        }
+
+        // Handle non-200 HTTP status codes
+        $response_code = wp_remote_retrieve_response_code($response);
+        $response_body = wp_remote_retrieve_body($response);
+
+        if ($response_code !== 200) {
+            $error_message = sprintf(__('License server returned an error (Code: %d, Message: %s ).', 'article-rewriter'), $response_code, $response_body);
+            $server_data = json_decode($response_body, true);
+            if (isset($server_data['message'])) {
+                $error_message .= ' ' . sanitize_text_field($server_data['message']);
+            }
+            // Optional logging: error_log('Article Rewriter: License activation failed. Server response: ' . $response_code . ' - ' . $response_body);
+            return new WP_Error('server_error_' . $response_code, $error_message);
+        }
+
+        // Decode the successful JSON response
+        $data = json_decode($response_body, true);
+        if (is_null($data)) {
+            // Optional logging: error_log('Article Rewriter: Failed to decode JSON response from license server: ' . $response_body);
+            return new WP_Error('invalid_response', __('Received an invalid response from the license server.', 'article-rewriter'));
+        }
+
+        // Return the parsed data (expecting keys like 'success', 'message', 'licenseKey', 'expiresAt')
+        return $data;
     }
 
     /**
@@ -277,14 +338,130 @@ class Article_Rewriter_License {
      * @return   array|WP_Error The response from the license server or an error.
      */
     private function deactivate_license($license_key) {
-        // This is a placeholder for the actual deactivation process
-        // In a real implementation, you would make an API call to your license server
-        // to deactivate the license for this domain
+         // Check if the server API key constant is defined
+        if (!defined('ARTICLE_REWRITER_SERVER_API_KEY') || empty(ARTICLE_REWRITER_SERVER_API_KEY)) {
+             // Optional logging: error_log('Article Rewriter: Server API Key is not defined.');
+             return new WP_Error('server_key_missing', __('License server communication key is not configured.', 'article-rewriter'));
+        }
 
-        // For demonstration purposes, we'll just return a success response
-        return array(
-            'success' => true,
-            'message' => 'License deactivated successfully.',
+        if (empty($license_key)) {
+             return new WP_Error('missing_license_key', __('License key not found for deactivation.', 'article-rewriter'));
+        }
+
+        $api_key = ARTICLE_REWRITER_SERVER_API_KEY;
+        $url = trailingslashit($this->license_server) . 'api/v1/licenses/deactivate'; // Assumed endpoint
+        $domain = home_url();
+
+        $body = array(
+            'purchase_code' => $license_key, // Changed key name from licenseKey to purchaseCode
+            'domain' => $domain,             // Changed from domainName
+            'product_id' => $this->plugin_name // Changed from product
         );
+
+        $response = wp_remote_post($url, array(
+            'timeout' => 30,
+            'headers' => array(
+                'Content-Type' => 'application/json',
+                'X-API-Key' => $api_key,
+                'Accept' => 'application/json'
+            ),
+            'body' => json_encode($body),
+        ));
+
+        // Handle WP HTTP API errors
+        if (is_wp_error($response)) {
+            // Optional logging: error_log('Article Rewriter: License deactivation request failed. ' . $response->get_error_message());
+            return new WP_Error('request_failed', __('Could not connect to the license server.', 'article-rewriter') . ' (' . $response->get_error_code() . ')');
+        }
+
+        // Handle non-200 HTTP status codes
+        $response_code = wp_remote_retrieve_response_code($response);
+        $response_body = wp_remote_retrieve_body($response);
+
+        if ($response_code !== 200) {
+            $error_message = sprintf(__('License server returned an error (Code: %d).', 'article-rewriter'), $response_code);
+            $server_data = json_decode($response_body, true);
+            if (isset($server_data['message'])) {
+                $error_message .= ' ' . sanitize_text_field($server_data['message']);
+            }
+             // Optional logging: error_log('Article Rewriter: License deactivation failed. Server response: ' . $response_code . ' - ' . $response_body);
+            return new WP_Error('server_error_' . $response_code, $error_message);
+        }
+
+        // Decode the successful JSON response
+        $data = json_decode($response_body, true);
+        if (is_null($data)) {
+            // Optional logging: error_log('Article Rewriter: Failed to decode JSON response from license server: ' . $response_body);
+            return new WP_Error('invalid_response', __('Received an invalid response from the license server.', 'article-rewriter'));
+        }
+
+        // Return the parsed data (expecting keys like 'success', 'message')
+        return $data;
+    }
+
+    /**
+     * Call the license server's verify endpoint.
+     *
+     * @since    1.1.1 // Assuming version bump for this change
+     * @access   private
+     * @param    string $license_key The license key (purchase code) to verify.
+     * @return   array|WP_Error The response from the license server or an error.
+     */
+    private function _call_verify_endpoint($license_key) {
+        // Check if the server API key constant is defined
+        if (!defined('ARTICLE_REWRITER_SERVER_API_KEY') || empty(ARTICLE_REWRITER_SERVER_API_KEY)) {
+             return new WP_Error('server_key_missing', __('License server communication key is not configured.', 'article-rewriter'));
+        }
+
+        if (empty($license_key)) {
+             return new WP_Error('missing_license_key', __('License key not found for verification.', 'article-rewriter'));
+        }
+
+        $api_key = ARTICLE_REWRITER_SERVER_API_KEY;
+        $url = trailingslashit($this->license_server) . 'api/v1/licenses/verify'; // Target the /verify endpoint
+        $domain = home_url();
+
+        $body = array(
+            'purchase_code' => $license_key, // Changed key name from licenseKey to purchaseCode
+            'domain' => $domain,             // Changed from domainName
+            'product_id' => $this->plugin_name // Changed from product
+        );
+
+        $response = wp_remote_post($url, array(
+            'timeout' => 30,
+            'headers' => array(
+                'Content-Type' => 'application/json',
+                'X-API-Key' => $api_key,
+                'Accept' => 'application/json'
+            ),
+            'body' => json_encode($body),
+        ));
+
+        // Handle WP HTTP API errors
+        if (is_wp_error($response)) {
+            return new WP_Error('request_failed', __('Could not connect to the license server for verification.', 'article-rewriter') . ' (' . $response->get_error_code() . ')');
+        }
+
+        // Handle non-200 HTTP status codes
+        $response_code = wp_remote_retrieve_response_code($response);
+        $response_body = wp_remote_retrieve_body($response);
+
+        if ($response_code !== 200) {
+            $error_message = sprintf(__('License server returned an error during verification (Code: %d).', 'article-rewriter'), $response_code);
+            $server_data = json_decode($response_body, true);
+            if (isset($server_data['message'])) {
+                $error_message .= ' ' . sanitize_text_field($server_data['message']);
+            }
+            return new WP_Error('server_error_' . $response_code, $error_message);
+        }
+
+        // Decode the successful JSON response
+        $data = json_decode($response_body, true);
+        if (is_null($data)) {
+            return new WP_Error('invalid_response', __('Received an invalid verification response from the license server.', 'article-rewriter'));
+        }
+
+        // Return the parsed data (expecting keys like 'success', 'status', 'expiresAt')
+        return $data;
     }
 }

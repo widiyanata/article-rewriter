@@ -301,80 +301,109 @@
    * Initialize license management functionality
    */
   function initLicenseManagement() {
-    const $activateForm = $("#article-rewriter-license-activate-form");
-    const $deactivateForm = $("#article-rewriter-license-deactivate-form");
+    const $activateFormDiv = $("#article-rewriter-activate-form"); // Target the div now
+    const $activateBtn = $("#article-rewriter-activate-license-btn"); // Target the button
+    const $activateMsg = $("#article-rewriter-activate-message"); // Message area
+    const $deactivateBtn = $("#article-rewriter-deactivate-license-btn"); // Target the button now
+    const $deactivateMsg = $("#article-rewriter-deactivate-message"); // Message area
 
-    if (!$activateForm.length && !$deactivateForm.length) {
+    if (!$activateBtn.length && !$deactivateBtn.length) {
       return;
     }
 
-    // Handle license activation
-    $activateForm.on("submit", function (e) {
-      e.preventDefault();
-
-      const $submitButton = $(this).find('input[type="submit"]');
-      const purchaseCode = $(this).find('input[name="purchase_code"]').val();
+    // Handle license activation button click
+    $activateBtn.on("click", function () {
+      const $button = $(this);
+      // Find the input within the ancestor div
+      const purchaseCode = $activateFormDiv.find('input[name="purchase_code"]').val();
 
       if (!purchaseCode) {
-        alert(articleRewriterAdmin.i18n.enter_purchase_code);
+        // Use the message div instead of alert
+        $activateMsg
+          .text(articleRewriterAdmin.i18n.enter_purchase_code)
+          .addClass("notice notice-warning")
+          .removeClass("notice-error notice-success");
         return;
       }
 
-      $submitButton.prop("disabled", true).val(articleRewriterAdmin.i18n.activating);
+      $button.prop("disabled", true).text(articleRewriterAdmin.i18n.activating);
+      $activateMsg.text("").removeClass("notice notice-error notice-success notice-warning"); // Clear previous messages
 
       $.ajax({
         url: articleRewriterAdmin.ajax_url,
         type: "POST",
         data: {
           action: "article_rewriter_activate_license",
-          nonce: articleRewriterAdmin.nonce,
+          nonce: articleRewriterAdmin.nonce, // Nonce from localized data
           purchase_code: purchaseCode,
         },
         success: function (response) {
           if (response.success) {
-            window.location.reload();
+            // Display success message and reload
+            $activateMsg
+              .text(response.data.message || articleRewriterAdmin.i18n.activateSuccess) // Assuming success message
+              .addClass("notice notice-success");
+            setTimeout(function () {
+              window.location.reload();
+            }, 1500);
           } else {
-            alert(response.data || articleRewriterAdmin.i18n.activation_error);
-            $submitButton.prop("disabled", false).val(articleRewriterAdmin.i18n.activate);
+            // Display error message
+            $activateMsg
+              .text(response.data.message || articleRewriterAdmin.i18n.activation_error)
+              .addClass("notice notice-error");
+            $button.prop("disabled", false).text(articleRewriterAdmin.i18n.activate);
           }
         },
         error: function () {
-          alert(articleRewriterAdmin.i18n.activation_error);
-          $submitButton.prop("disabled", false).val(articleRewriterAdmin.i18n.activate);
+          // Display generic error message
+          $activateMsg
+            .text(articleRewriterAdmin.i18n.activation_error)
+            .addClass("notice notice-error");
+          $button.prop("disabled", false).text(articleRewriterAdmin.i18n.activate);
         },
       });
     });
 
-    // Handle license deactivation
-    $deactivateForm.on("submit", function (e) {
-      e.preventDefault();
-
+    // Handle license deactivation button click
+    $deactivateBtn.on("click", function () {
       if (!confirm(articleRewriterAdmin.i18n.confirm_deactivate)) {
         return;
       }
 
-      const $submitButton = $(this).find('input[type="submit"]');
-
-      $submitButton.prop("disabled", true).val(articleRewriterAdmin.i18n.deactivating);
+      const $button = $(this);
+      $button.prop("disabled", true).text(articleRewriterAdmin.i18n.deactivating);
+      $deactivateMsg.text("").removeClass("notice notice-error notice-success"); // Clear previous messages
 
       $.ajax({
         url: articleRewriterAdmin.ajax_url,
         type: "POST",
         data: {
           action: "article_rewriter_deactivate_license",
-          nonce: articleRewriterAdmin.nonce,
+          nonce: articleRewriterAdmin.nonce, // Nonce from localized data
         },
         success: function (response) {
           if (response.success) {
-            window.location.reload();
+            // Display success message and reload after a short delay
+            $deactivateMsg
+              .text(response.data.message || articleRewriterAdmin.i18n.deactivateSuccess) // Assuming success message is in response.data.message
+              .addClass("notice notice-success");
+            setTimeout(function () {
+              window.location.reload();
+            }, 1500); // Reload after 1.5 seconds
           } else {
-            alert(response.data || articleRewriterAdmin.i18n.deactivation_error);
-            $submitButton.prop("disabled", false).val(articleRewriterAdmin.i18n.deactivate);
+            // Display error message
+            $deactivateMsg
+              .text(response.data.message || articleRewriterAdmin.i18n.deactivation_error)
+              .addClass("notice notice-error");
+            $button.prop("disabled", false).text(articleRewriterAdmin.i18n.deactivate);
           }
         },
         error: function () {
-          alert(articleRewriterAdmin.i18n.deactivation_error);
-          $submitButton.prop("disabled", false).val(articleRewriterAdmin.i18n.deactivate);
+          // Display generic error message
+          $deactivateMsg
+            .text(articleRewriterAdmin.i18n.deactivation_error)
+            .addClass("notice notice-error");
+          $button.prop("disabled", false).text(articleRewriterAdmin.i18n.deactivate);
         },
       });
     });

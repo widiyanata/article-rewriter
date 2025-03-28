@@ -18,7 +18,7 @@
 *   **Confirmed:** Batch processing initiated via `admin-post` hook, uses WP Cron (`article_rewriter_process_batch`) for background processing, and provides status via AJAX (`wp_ajax_article_rewriter_get_batch_jobs_status`).
 *   **Confirmed:** Batch processing uses two custom DB tables (`wp_article_rewriter_batch`, `wp_article_rewriter_batch_items`).
 *   **Resolved:** Refactored API logic into `Article_Rewriter_Service` and individual provider classes (`OpenAI_Provider`, `DeepSeek_Provider`, `Anthropic_Provider`, `Gemini_Provider`) extending `Abstract_API_Provider`. History saving remains in `Article_Rewriter_Service`.
-*   **Confirmed:** License activation/deactivation handled via `admin-post` hooks.
+*   **Resolved:** License activation and deactivation now both handled via AJAX hooks (`wp_ajax_article_rewriter_activate_license`, `wp_ajax_article_rewriter_deactivate_license`) triggered by button clicks in the admin UI.
 *   **Confirmed:** Daily license check scheduled via WP Cron (`article_rewriter_license_check`).
 *   **Confirmed:** Admin notices displayed based on license status (`article_rewriter_license_status` option).
 *   **Confirmed:** License key, status, domain, activation/expiry dates stored in options.
@@ -28,8 +28,8 @@
 *   **Confirmed:** Default options (API keys, license status, etc.) are added on activation.
 *   **Confirmed:** Deactivation clears WP Cron hooks (`article_rewriter_license_check`, `article_rewriter_process_batch`) but does **not** remove DB tables or options.
 *   **Confirmed:** Block Editor JS (`src/index.js`) uses React and standard WP packages (`@wordpress/data`, `@wordpress/api-fetch`, `@wordpress/components`) to create a sidebar for rewriting the entire post content and viewing/applying history via REST API calls.
-*   **Confirmed:** Admin JS (`assets/js/article-rewriter-admin.js`) uses jQuery and AJAX for batch status polling/updates and license activation/deactivation.
-*   **Resolved:** Admin JS AJAX calls for batch start, license activation/deactivation are now correctly handled by updated PHP AJAX handlers using `wp_send_json_*`.
+*   **Confirmed:** Admin JS (`assets/js/article-rewriter-admin.js`) uses jQuery and AJAX for batch status polling/updates, license activation (via button click), and license deactivation (via button click).
+*   **Resolved:** Admin JS AJAX calls for batch start are correctly handled. **Resolved:** License activation and deactivation AJAX calls added/updated and PHP handlers confirmed.
 *   **Resolved:** Added missing PHP AJAX handlers for batch job details, cancel, and delete.
 *   **Resolved:** Corrected nonce checks in all relevant PHP AJAX handlers to use `article_rewriter_nonce`.
 *   **Confirmed:** Classic Editor JS (`assets/js/article-rewriter-classic-editor.js`) uses jQuery to add a TinyMCE button, open a modal, and interact with the `/rewrite` and `/history` REST endpoints (including nonce handling).
@@ -40,7 +40,7 @@
 *   **API Integration:** Test all provider integrations (OpenAI, DeepSeek, Anthropic, Gemini).
 *   **Editor Integration:** Test the actual rewrite functionality and UI within both Classic and Block editors. Verify Classic Editor modal and history functionality. Verify Block Editor sidebar functionality.
 *   **Batch Processing:** Verify the WP Cron job scheduling/execution. Test the batch UI (`admin/partials/article-rewriter-admin-batch.php`) and AJAX functionality (start, status, details, cancel, delete). Test handling of failed items.
-*   **Licensing:** Implement the actual license server communication logic in `verify_purchase_code` and `deactivate_license`. Test the activation/deactivation flow via AJAX. Verify the daily cron check correctly updates status (e.g., for expiry). Test admin notices.
+*   **Licensing:** **Placeholder functions (`verify_purchase_code`, `deactivate_license`) updated to make actual HTTP requests to assumed server endpoints. `check_license` method (for cron) also updated to handle server responses.** Still requires building the actual license server application. Test the activation/deactivation flow via AJAX once server is ready. Verify the daily cron check correctly updates status based on server response. Test admin notices. Define `ARTICLE_REWRITER_SERVER_API_KEY` constant.
 *   **Settings:** Verify that registered settings are correctly saved/retrieved and used by the plugin logic (e.g., API keys, selected models, defaults applied). Check the UI in `admin/partials/article-rewriter-admin-settings.php`. Verify default options set on activation are appropriate. **Model selection settings added and implemented.**
 *   **Frontend Build Process:** Confirmed build uses `npm run build` via `@wordpress/scripts`. Verify the build process works and generates `build/index.js` correctly from `src/index.js`.
 *   **Error Handling:** Review error handling in `Article_Rewriter_Service`, provider classes, REST handler, AJAX handlers, Block Editor JS, Classic Editor JS, Admin JS, and batch processing cron job.
@@ -52,10 +52,11 @@
 ## 3. Current Status
 
 *   **Analysis & Refactoring Phase:** Complete. AJAX conflicts resolved, missing handlers added, API logic refactored, providers implemented, model selection added.
-*   **Code Functionality:** Core structure refactored and providers implemented. Initial user feedback indicates core API and features are working. More thorough testing still recommended.
+*   **Code Functionality:** Core structure refactored and providers implemented. Initial user feedback indicates core API and features are working. License communication logic updated but untested pending server implementation. More thorough testing still recommended.
 
 ## 4. Known Issues / Blockers
 
-*   Placeholder code for license server communication.
+*   **License Server Application:** The backend license server application needs to be built and deployed.
+*   **License Server API Key:** The `ARTICLE_REWRITER_SERVER_API_KEY` constant needs to be defined in the WordPress environment.
 
-*(Refactoring and provider implementation complete. Initial testing positive. License server implementation pending.)*
+*(Refactoring and provider implementation complete. Initial testing positive. License communication logic updated in plugin, but server implementation pending.)*

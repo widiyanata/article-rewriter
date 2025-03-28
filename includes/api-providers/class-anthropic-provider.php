@@ -28,8 +28,7 @@ class Anthropic_Provider extends Abstract_API_Provider {
     }
 
     protected function get_model_name() {
-        // TODO: Make this configurable via settings?
-        // Using Opus as default for now, matching the placeholder
+        // Retrieve the saved model option, fallback to 'claude-3-opus-20240229'
         return get_option('article_rewriter_anthropic_model', 'claude-3-opus-20240229'); 
     }
 
@@ -88,7 +87,6 @@ class Anthropic_Provider extends Abstract_API_Provider {
         // --- Standard Error Handling (copied & adapted from abstract class) ---
         if (is_wp_error($response)) {
             // Log the specific WP_Error message if needed
-            // error_log('Anthropic API Request Error: ' . $response->get_error_message());
             return new WP_Error($this->get_error_prefix() . '_request_failed', __('API request failed.', 'article-rewriter') . ' ' . $response->get_error_message());
         }
 
@@ -109,7 +107,6 @@ class Anthropic_Provider extends Abstract_API_Provider {
                       $error_message .= ' - ' . substr(strip_tags($body), 0, 200); // Limit raw body length
                  }
              }
-             // error_log('Anthropic API Response Error: ' . $error_message); // Log error
              return new WP_Error($this->get_error_prefix() . '_response_error', $error_message);
         }
         // --- End Standard Error Handling ---
@@ -120,7 +117,6 @@ class Anthropic_Provider extends Abstract_API_Provider {
         // Anthropic-specific response structure check
         if (!isset($response_data['content'][0]['text'])) {
              // Log the full response for debugging if needed
-             // error_log('Anthropic Invalid Response Structure: ' . $body);
             return new WP_Error($this->get_error_prefix() . '_invalid_response', sprintf(__('Invalid response structure from %s API.', 'article-rewriter'), $this->get_provider_name()));
         }
 

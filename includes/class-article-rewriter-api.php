@@ -90,20 +90,40 @@ class Article_Rewriter_API {
      *
      * @since    1.0.0
      * @param    WP_REST_Request $request The request object.
-     * @return   bool
+     * @return   bool|WP_Error True if permission is granted, WP_Error otherwise.
      */
     public function check_permission($request) {
-        // Check if user can edit posts
+        // 1. Nonce Check (for requests originating from WP admin)
+        $nonce = $request->get_header('X-WP-Nonce');
+        if (!wp_verify_nonce($nonce, 'wp_rest')) {
+             // Return a WP_Error for permission denied, REST API handles this correctly
+             return new WP_Error(
+                 'rest_forbidden_context',
+                 __('Nonce verification failed.', 'article-rewriter'),
+                 array('status' => 401) // Unauthorized or 403 Forbidden
+             );
+        }
+
+        // 2. Capability Check
         if (!current_user_can('edit_posts')) {
-            return false;
+             return new WP_Error(
+                 'rest_forbidden_context',
+                 __('Sorry, you are not allowed to perform this action.', 'article-rewriter'),
+                 array('status' => 403) // Forbidden
+             );
         }
 
-        // Check if license is active
-        $license_status = get_option('article_rewriter_license_status');
+        // 3. License Check
+        $license_status = get_option('article_rewriter_license_status', 'inactive');
         if ($license_status !== 'active') {
-            return false;
+             return new WP_Error(
+                 'rest_license_inactive',
+                 __('Your license is not active.', 'article-rewriter'),
+                 array('status' => 403) // Forbidden
+             );
         }
 
+        // All checks passed
         return true;
     }
 
@@ -169,7 +189,13 @@ class Article_Rewriter_API {
      */
     public function get_history($request) {
         global $wpdb;
-        $post_id = $request->get_param('post_id');
+        // Sanitize post_id as integer
+        $post_id = intval($request->get_param('post_id')); 
+
+        if ($post_id <= 0) {
+             // Optionally return an error if post_id is invalid
+             return new WP_Error('invalid_post_id', __('Invalid Post ID provided.', 'article-rewriter'), array('status' => 400));
+        }
 
         $table_name = $wpdb->prefix . 'article_rewriter_history';
         $results = $wpdb->get_results(

@@ -86,10 +86,11 @@
           $submitButton.prop("disabled", false);
           $spinner.removeClass("is-active");
 
-          // Show error message
+          // Show error message - Escape potentially unsafe message from server
           let errorMessage = articleRewriterClassic.i18n.error;
           if (xhr.responseJSON && xhr.responseJSON.message) {
-            errorMessage = xhr.responseJSON.message;
+            // Basic escaping: replace HTML tags
+            errorMessage = $("<div>").text(xhr.responseJSON.message).html();
           }
 
           $message.html('<div class="notice notice-error"><p>' + errorMessage + "</p></div>");
@@ -154,17 +155,26 @@
 
           let html = '<ul class="article-rewriter-history-list">';
 
+          // Helper function for basic HTML escaping in JS
+          const escapeHtml = (unsafe) => {
+            return $("<div>").text(unsafe).html();
+          };
+
           response.forEach(function (item) {
             html += '<li class="article-rewriter-history-item">';
             html += '<div class="article-rewriter-history-item-header">';
-            html += '<span class="article-rewriter-history-item-api">' + item.api + "</span>";
-            html += '<span class="article-rewriter-history-item-date">' + item.date + "</span>";
+            html +=
+              '<span class="article-rewriter-history-item-api">' + escapeHtml(item.api) + "</span>"; // Escaped
+            html +=
+              '<span class="article-rewriter-history-item-date">' +
+              escapeHtml(item.date) +
+              "</span>"; // Escaped date just in case
             html += "</div>";
             html +=
               '<div class="article-rewriter-history-item-style">' +
-              articleRewriterClassic.i18n.style +
+              articleRewriterClassic.i18n.style + // This is translated, assumed safe
               ": " +
-              item.style +
+              escapeHtml(item.style) + // Escaped
               "</div>";
             html +=
               '<button type="button" class="button article-rewriter-history-apply" data-content="' +

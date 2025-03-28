@@ -587,8 +587,8 @@ class Article_Rewriter_Batch {
             wp_send_json_error(array('message' => __('Security check failed.', 'article-rewriter')));
         }
 
-        // Check if user has permission
-        if (!current_user_can('edit_posts')) { // Or manage_options? Decide capability.
+        // Check if user has permission - Changed to manage_options for deletion
+        if (!current_user_can('manage_options')) { 
             wp_send_json_error(array('message' => __('You do not have sufficient permissions to perform this action.', 'article-rewriter')));
         }
 
