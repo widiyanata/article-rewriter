@@ -272,13 +272,8 @@ class Article_Rewriter_License {
      * @return   array|WP_Error The response from the license server or an error.
      */
     private function verify_purchase_code($purchase_code) {
-        // Check if the server API key constant is defined
-        if (!defined('ARTICLE_REWRITER_SERVER_API_KEY') || empty(ARTICLE_REWRITER_SERVER_API_KEY)) {
-             // error_log('Article Rewriter: Server API Key is not defined.'); // Optional logging
-             return new WP_Error('server_key_missing', __('License server communication key is not configured.', 'article-rewriter'));
-        }
+        // Removed API Key check
 
-        $api_key = ARTICLE_REWRITER_SERVER_API_KEY;
         $url = trailingslashit($this->license_server) . 'api/v1/licenses/activate'; // Assumed endpoint
         $domain = home_url();
 
@@ -293,7 +288,7 @@ class Article_Rewriter_License {
             'timeout' => 30, // Set a reasonable timeout
             'headers' => array(
                 'Content-Type' => 'application/json',
-                'X-API-Key' => $api_key, // Server-to-server authentication key
+                // Removed X-API-Key header
                 'Accept' => 'application/json'
             ),
             'body' => json_encode($body),
@@ -338,17 +333,12 @@ class Article_Rewriter_License {
      * @return   array|WP_Error The response from the license server or an error.
      */
     private function deactivate_license($license_key) {
-         // Check if the server API key constant is defined
-        if (!defined('ARTICLE_REWRITER_SERVER_API_KEY') || empty(ARTICLE_REWRITER_SERVER_API_KEY)) {
-             // Optional logging: error_log('Article Rewriter: Server API Key is not defined.');
-             return new WP_Error('server_key_missing', __('License server communication key is not configured.', 'article-rewriter'));
-        }
+         // Removed API Key check
 
         if (empty($license_key)) {
              return new WP_Error('missing_license_key', __('License key not found for deactivation.', 'article-rewriter'));
         }
 
-        $api_key = ARTICLE_REWRITER_SERVER_API_KEY;
         $url = trailingslashit($this->license_server) . 'api/v1/licenses/deactivate'; // Assumed endpoint
         $domain = home_url();
 
@@ -362,7 +352,7 @@ class Article_Rewriter_License {
             'timeout' => 30,
             'headers' => array(
                 'Content-Type' => 'application/json',
-                'X-API-Key' => $api_key,
+                // Removed X-API-Key header
                 'Accept' => 'application/json'
             ),
             'body' => json_encode($body),
@@ -408,16 +398,12 @@ class Article_Rewriter_License {
      * @return   array|WP_Error The response from the license server or an error.
      */
     private function _call_verify_endpoint($license_key) {
-        // Check if the server API key constant is defined
-        if (!defined('ARTICLE_REWRITER_SERVER_API_KEY') || empty(ARTICLE_REWRITER_SERVER_API_KEY)) {
-             return new WP_Error('server_key_missing', __('License server communication key is not configured.', 'article-rewriter'));
-        }
+        // Removed API Key check
 
         if (empty($license_key)) {
              return new WP_Error('missing_license_key', __('License key not found for verification.', 'article-rewriter'));
         }
 
-        $api_key = ARTICLE_REWRITER_SERVER_API_KEY;
         $url = trailingslashit($this->license_server) . 'api/v1/licenses/verify'; // Target the /verify endpoint
         $domain = home_url();
 
@@ -431,7 +417,7 @@ class Article_Rewriter_License {
             'timeout' => 30,
             'headers' => array(
                 'Content-Type' => 'application/json',
-                'X-API-Key' => $api_key,
+                 // Removed X-API-Key header
                 'Accept' => 'application/json'
             ),
             'body' => json_encode($body),

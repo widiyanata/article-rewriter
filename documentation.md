@@ -54,24 +54,6 @@ Alternatively, you can install manually via FTP:
 4.  Navigate to `Plugins` > `Installed Plugins`.
 5.  Locate "Article Rewriter" in the list and click `Activate`.
 
-### Defining the Server API Key (Required for Licensing)
-
-For the plugin to securely communicate with the license server for activation and verification, you **must** define a secret API key as a constant in your WordPress configuration. This key must match the key expected by your license server.
-
-**Recommended Method: Edit `wp-config.php`**
-
-1.  Connect to your server via FTP or use your hosting control panel's File Manager.
-2.  Locate the `wp-config.php` file in the root directory of your WordPress installation.
-3.  **Carefully** edit the file and add the following line, replacing `'YOUR_SECRET_SERVER_API_KEY'` with the actual secret key you have configured on your license server:
-
-    ```php
-    define('ARTICLE_REWRITER_SERVER_API_KEY', 'YOUR_SECRET_SERVER_API_KEY');
-    ```
-4.  Add this line somewhere **above** the line that says `/* That's all, stop editing! Happy publishing. */`.
-5.  Save the `wp-config.php` file.
-
-**Important:** Keep this key secret. Do not share it publicly. If you are unsure about editing `wp-config.php`, consult your web host or a developer.
-
 ---
 
 ## 4. License Activation
